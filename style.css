@@ -1805,6 +1805,136 @@ button.kj-chip:hover {
   gap: 6px;
 }
 
+/* ------------------------------------------------------------ kanji exams */
+.kj-exam-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.kj-exam-btn {
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  transition: transform 0.14s ease, border-color 0.14s ease;
+}
+
+.kj-exam-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.kj-exam-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.kj-exam-badge.is-passed {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.kj-exam-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.kj-exam-banner p {
+  margin: 0;
+}
+
+.kj-exam-count {
+  margin: 0;
+}
+
+.kj-exam-card {
+  text-align: center;
+}
+
+.kj-exam-prompt {
+  margin: 4px 0 0;
+  font-family: var(--font-jp);
+  font-size: 4.2rem;
+  line-height: 1.2;
+}
+
+.kj-exam-prompt.is-long {
+  font-size: 2.6rem;
+}
+
+.kj-exam-phrase {
+  margin: 8px 0 0;
+  font-family: var(--font-jp);
+  font-size: 1.45rem;
+  line-height: 2.3;
+}
+
+.kj-choice {
+  font-family: var(--font-ui);
+  font-size: 0.98rem;
+  padding: 18px 12px 16px;
+  line-height: 1.35;
+}
+
+.kj-choice.is-jp {
+  font-family: var(--font-jp);
+  font-size: 1.3rem;
+}
+
+.kj-choices.is-text {
+  grid-template-columns: 1fr;
+}
+
+.kj-choices.is-text .kj-choice {
+  text-align: left;
+  padding-left: 36px;
+}
+
+.kj-choices + .feedback {
+  margin-top: 14px;
+}
+
+.kj-missed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.kj-missed {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.kj-missed-kind {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
 /* ------------------------------------------------------------- responsive */
 @media (max-width: 460px) {
   .app {

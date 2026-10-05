@@ -63,6 +63,13 @@ Tu marques les kanji que tu as appris, et tout le reste s'en déduit :
 - **Prochain kanji conseillé** : celui qui te rend lisibles le plus de nouveaux
   mots avec ce que tu sais déjà.
 
+**Examens** : à 5, 10, 15… kanji appris, un examen reprend *tous* les kanji
+appris jusque-là, dans l'ordre où tu les as appris — deux questions par kanji
+(30 au plus, les cinq derniers toujours inclus), parmi : sens du kanji, lecture
+d'un mot, sens d'un mot, sens d'une phrase. Les mots demandés n'utilisent que des
+kanji de l'examen ; dans les phrases, les autres gardent leurs furigana. Réussi à
+80 %, et le meilleur score reste affiché.
+
 Les données sont dans `kanji.js`, écrites à la main ; `test-kanji.js` vérifie
 que chaque kanji d'une phrase porte bien sa lecture.
 

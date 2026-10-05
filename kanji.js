@@ -787,7 +787,7 @@ const KANJI = [
   {
     k: '先',
     g: 'gens',
-    fr: 'avant, devant',
+    fr: 'précédent, en avance',
     strokes: 6,
     on: ['セン'],
     kun: ['さき'],

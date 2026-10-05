@@ -36,7 +36,8 @@ const load = (file) => fs.readFileSync(path.join(DIR, file), 'utf8');
 (0, eval)(
   `${load('kanji.js')}\n${load('kanji-app.js')}\n` +
     ';Object.assign(globalThis.__scope||(globalThis.__scope={}),' +
-    '{KANJI,KANJI_GROUPS,ALL_WORDS,parseRuby,kanjiIn,suggestNext,wordsElsewhere,kanjiStore})',
+    '{KANJI,KANJI_GROUPS,ALL_WORDS,parseRuby,kanjiIn,suggestNext,wordsElsewhere,kanjiStore,' +
+    'buildExam,currentExam:()=>exam})',
 );
 const { KANJI, KANJI_GROUPS, ALL_WORDS, parseRuby, kanjiIn, suggestNext, wordsElsewhere } =
   globalThis.__scope;
@@ -145,6 +146,77 @@ check('flèches sans effet sur la liste', window.location.hash === '#kanji/incon
 window.location.hash = '#kanji/水';
 document.fireKey('ArrowRight');
 check('flèche droite → kanji suivant', window.location.hash === '#kanji/木', window.location.hash);
+
+// --------------------------------------------------------------------- exams
+console.log('Examens :');
+const { El } = require('./test-dom.js');
+const click = (cls, dataset = {}) => view.fire('click', { target: Object.assign(new El(), { _class: cls, dataset }) });
+const store = globalThis.__scope.kanjiStore;
+const { currentExam, buildExam } = globalThis.__scope;
+
+store.learned = ['水'];
+window.location.hash = '#kanji';
+check('pas d’examen avant 5 kanji', !view.innerHTML.includes('kj-exam-btn'));
+check('… mais on annonce le premier', view.innerHTML.includes('Premier examen à 5 kanji appris : encore 4'));
+window.location.hash = '#kanji/examen/5';
+check('examen pas encore ouvert → liste', !currentExam() && view.innerHTML.includes('kj-tiles'));
+
+// Learn the fifth one from its card: the banner shows up.
+store.learned = ['日', '大', '水', '一'];
+window.location.hash = '#kanji/人';
+click('kj-learn');
+check('5ᵉ kanji appris → bannière d’examen', view.innerHTML.includes('L’examen sur les 5 est prêt'));
+check('l’ordre d’apprentissage est gardé', store.learned.join('') === '日大水一人', store.learned.join(''));
+
+click('kj-exam-start', { n: '5' });
+let ex = currentExam();
+check('l’examen démarre', !!ex && window.location.hash === '#kanji/examen/5');
+check('2 questions par kanji', ex.questions.length === 10, `(${ex.questions.length})`);
+check(
+  'chaque kanji est interrogé',
+  ['日', '大', '水', '一', '人'].every((k) => ex.questions.some((q) => q.card.k === k)),
+);
+check(
+  'quatre propositions distinctes, une seule bonne',
+  ex.questions.every((q) => q.options.length === 4 && new Set(q.options).size === 4 && q.answer >= 0),
+);
+check(
+  'les mots demandés ne contiennent que des kanji de l’examen',
+  ex.questions
+    .filter((q) => q.kind === 'Lecture' || q.kind === 'Sens du mot')
+    .every((q) => kanjiIn(q.prompt).every((k) => '日大水一人'.includes(k))),
+);
+
+// Furigana toggling must not restart the exam.
+const firstPrompt = ex.questions[0].prompt;
+click('kj-furi', { furi: 'always' });
+check('changer les furigana ne relance pas l’examen', currentExam() === ex && ex.questions[0].prompt === firstPrompt);
+
+// One wrong answer, then all right, alternating click and keyboard.
+ex.questions.forEach((q, i) => {
+  const pick = i === 0 ? (q.answer + 1) % 4 : q.answer;
+  if (i % 2) document.fireKey(String(pick + 1));
+  else click('kj-choice', { i: String(pick) });
+  if (i === 0) check('mauvaise réponse corrigée', view.innerHTML.includes('feedback ko'));
+  if (i % 2) document.fireKey('Enter');
+  else click('kj-exam-next');
+});
+check('examen terminé', ex.done && view.innerHTML.includes('Examen des 5 kanji'));
+check('score 9 / 10', ex.score === 9 && view.innerHTML.includes('<strong>90</strong>%'));
+check('l’erreur est listée avec un lien vers sa fiche', view.innerHTML.includes('À revoir') && view.innerHTML.includes(`data-k="${ex.missed[0].card.k}"`));
+check('meilleur score enregistré', JSON.parse(memory.get('konpeito.kanji.v1')).exams['5'].best === 90);
+
+window.location.hash = '#kanji';
+check('le score apparaît dans la liste', view.innerHTML.includes('kj-exam-badge is-passed">90 %'));
+check('quitter efface l’examen en cours', currentExam() === null);
+
+// A big exam stays bounded and always covers the latest five.
+store.learned = KANJI.map((c) => c.k);
+const big = buildExam(70);
+const latest = store.learned.slice(65, 70);
+check('examen plafonné à 30 questions', big.questions.length === 30, `(${big.questions.length})`);
+check('les 5 derniers kanji y sont toujours', latest.every((k) => big.questions.some((q) => q.card.k === k)));
+store.learned = [];
 
 window.location.hash = '#kana';
 check('retour à l’onglet kana', view.hidden === true && id('kana-view').hidden === false);
