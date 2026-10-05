@@ -2,3 +2,6 @@ node_modules/
 .DS_Store
 __pycache__/
 *.pyc
+
+# Reference charts downloaded from the web: third-party artwork, kept local only
+images/*-chart-fill-in-the-blank*.png
