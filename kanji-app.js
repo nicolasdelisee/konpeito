@@ -1,4 +1,4 @@
-/* global KANJI, KANJI_GROUPS */
+/* global KANJI, KANJI_GROUPS, KANJI_LEVELS */
 
 /**
  * The kanji tab: a list of cards, and one page per kanji.
@@ -32,7 +32,7 @@ const kanjiStore = loadKanjiStore();
 // ---------------------------------------------------------------- persistence
 
 function loadKanjiStore() {
-  const empty = { learned: [], furigana: 'auto', exams: {} };
+  const empty = { learned: [], furigana: 'auto', exams: {}, level: 'all' };
   try {
     const parsed = JSON.parse(localStorage.getItem(KANJI_STORAGE_KEY) || 'null');
     if (!parsed) return empty;
@@ -40,6 +40,7 @@ function loadKanjiStore() {
       learned: (parsed.learned || []).filter((k) => KANJI_BY_CHAR.has(k)),
       furigana: FURIGANA_MODES[parsed.furigana] ? parsed.furigana : 'auto',
       exams: parsed.exams || {},
+      level: KANJI_LEVELS.includes(parsed.level) ? parsed.level : 'all',
     };
   } catch (error) {
     console.warn('Kanji appris illisibles, on repart de zéro.', error);
@@ -112,9 +113,9 @@ function wordsElsewhere(k) {
  * The kanji that unlocks the most words given what you know: every word it
  * would make fully readable. Ties go to the earlier kanji of the list.
  */
-function suggestNext(learned) {
+function suggestNext(learned, pool = KANJI) {
   let best = null;
-  KANJI.forEach((card) => {
+  pool.forEach((card) => {
     if (learned.has(card.k)) return;
     const withIt = new Set([...learned, card.k]);
     const unlocked = ALL_WORDS.filter((word) => word.w.includes(card.k) && canRead(word.w, withIt));
@@ -204,14 +205,43 @@ function renderFuriganaPicker() {
   </div>`;
 }
 
+/** The kanji of the selected JLPT level, or all of them. */
+function visibleKanji() {
+  const { level } = kanjiStore;
+  return level === 'all' ? KANJI : KANJI.filter((card) => card.n === level);
+}
+
+/** N5 → N1; a level without cards yet stays visible, greyed out. */
+function renderLevelPicker(learned) {
+  const pill = (value, label, cards) => {
+    const done = cards.filter((card) => learned.has(card.k)).length;
+    const detail = cards.length ? `${done}/${cards.length}` : 'à venir';
+    return `<button type="button" class="pill kj-level" data-level="${value}" aria-pressed="${kanjiStore.level === value}"${cards.length ? '' : ' disabled'}>
+        ${label} <span class="kj-level-count">${detail}</span>
+      </button>`;
+  };
+  const levels = KANJI_LEVELS.map((n) =>
+    pill(n, `N${n}`, KANJI.filter((card) => card.n === n)),
+  ).join('');
+  return `<div class="kj-levels">
+      <span class="kj-furi-label">Niveau JLPT</span>
+      <div class="pill-group">${pill('all', 'Tous', KANJI)}${levels}</div>
+    </div>`;
+}
+
 function renderList() {
   const learned = learnedSet();
-  const next = suggestNext(learned);
-  const count = learned.size;
+  const pool = visibleKanji();
+  const next = suggestNext(learned, pool);
+  const count = pool.filter((card) => learned.has(card.k)).length;
+  const scope = kanjiStore.level === 'all' ? '' : ` du niveau N${kanjiStore.level}`;
 
   let suggestion = '';
   if (next) {
-    const sample = next.words.slice(0, 4).map((word) => escapeHtml(word.w)).join('、');
+    const sample = next.words
+      .slice(0, 4)
+      .map((word) => escapeHtml(word.w))
+      .join('、');
     const why = next.words.length
       ? `${count ? 'Avec ce que tu sais déjà, il' : 'Pour commencer : il'} te fait lire ${next.words.length} mot${next.words.length > 1 ? 's' : ''} : <span class="jp">${sample}</span>${next.words.length > 4 ? '…' : ''}`
       : 'Un bon point de départ.';
@@ -223,7 +253,9 @@ function renderList() {
   }
 
   const groups = KANJI_GROUPS.map((group) => {
-    const tiles = KANJI.filter((card) => card.g === group.id)
+    const cards = pool.filter((card) => card.g === group.id);
+    if (!cards.length) return '';
+    const tiles = cards
       .map(
         (card) =>
           `<button type="button" class="kj-open kj-tile${learned.has(card.k) ? ' is-learned' : ''}" data-k="${card.k}">
@@ -236,9 +268,10 @@ function renderList() {
   }).join('');
 
   return `<div class="card hero kj-summary">
-      <p class="hero-summary">${count ? `Tu as appris <strong>${count}</strong> kanji sur ${KANJI.length}.` : `${KANJI.length} kanji du quotidien, une fiche chacun.`}</p>
+      <p class="hero-summary">${count ? `Tu as appris <strong>${count}</strong> kanji sur ${pool.length}${scope}.` : `${pool.length} kanji${scope}, une fiche chacun.`}</p>
       ${suggestion}
     </div>
+    <div class="card">${renderLevelPicker(learned)}</div>
     ${renderExamsBlock()}
     <div class="card">${renderFuriganaPicker()}</div>
     <p class="settings-intro">Touche un kanji pour ouvrir sa fiche</p>
@@ -293,7 +326,9 @@ function renderCard(card) {
     ? `<h3 class="weak-title">On le retrouve aussi dans</h3>
       <ul class="kj-elsewhere">${elsewhere
         .map(
-          (word) => `<li><button type="button" class="kj-open kj-elsewhere-btn" data-k="${word.owner}">
+          (
+            word,
+          ) => `<li><button type="button" class="kj-open kj-elsewhere-btn" data-k="${word.owner}">
             <span class="jp">${escapeHtml(word.w)}</span>
             <span class="kj-word-r">${escapeHtml(word.r)}</span>
             <span class="kj-word-fr">${escapeHtml(word.fr)}</span>
@@ -319,7 +354,7 @@ function renderCard(card) {
     <div class="card hero kj-hero">
       <p class="kj-glyph" lang="ja">${card.k}</p>
       <p class="kj-meaning">${escapeHtml(card.fr)}</p>
-      <p class="muted">${card.strokes} trait${card.strokes > 1 ? 's' : ''} · ${escapeHtml(group.label)}</p>
+      <p class="muted">${card.strokes} trait${card.strokes > 1 ? 's' : ''} · ${escapeHtml(group.label)} · JLPT N${card.n}</p>
       <button type="button" class="kj-learn pill" aria-pressed="${isLearned}">${isLearned ? '✓ Appris' : 'Je l’ai appris'}</button>
     </div>
     ${renderExamBanner(card)}
@@ -370,7 +405,11 @@ function examSizes() {
  */
 function pickOptions(answer, near, far) {
   // « une femme » and « une femme (poli) » would both be right: keep only one.
-  const core = (text) => text.replace(/\(.*?\)/g, '').trim().toLowerCase();
+  const core = (text) =>
+    text
+      .replace(/\(.*?\)/g, '')
+      .trim()
+      .toLowerCase();
   const clashes = (a, b) => core(a).startsWith(core(b)) || core(b).startsWith(core(a));
   const wrong = [];
   [...shuffled(near), ...shuffled(far)].forEach((option) => {
@@ -415,7 +454,9 @@ function questionsFor(card, cards, known) {
         big: true,
         ...pickOptions(
           word.r,
-          nearWords.filter((other) => kanjiIn(other.w).some((k) => word.w.includes(k))).map((o) => o.r),
+          nearWords
+            .filter((other) => kanjiIn(other.w).some((k) => word.w.includes(k)))
+            .map((o) => o.r),
           nearWords.map((other) => other.r),
         ),
         explain: `${word.w} se lit ${word.r} — ${word.fr}`,
@@ -431,7 +472,9 @@ function questionsFor(card, cards, known) {
         big: true,
         ...pickOptions(
           word.fr,
-          nearWords.filter((other) => kanjiIn(other.w).some((k) => word.w.includes(k))).map((o) => o.fr),
+          nearWords
+            .filter((other) => kanjiIn(other.w).some((k) => word.w.includes(k)))
+            .map((o) => o.fr),
           nearWords.map((other) => other.fr),
         ),
         explain: `${word.w} (${word.r}) = ${word.fr}`,
@@ -511,7 +554,8 @@ function nextExamQuestion() {
 }
 
 function renderExamPrompt(question, learned) {
-  if (question.phrase) return `<p class="kj-exam-phrase">${renderPhrase(question.prompt, '', learned)}</p>`;
+  if (question.phrase)
+    return `<p class="kj-exam-phrase">${renderPhrase(question.prompt, '', learned)}</p>`;
   return `<p class="kj-exam-prompt${question.prompt.length > 3 ? ' is-long' : ''}">${escapeHtml(question.prompt)}</p>`;
 }
 
@@ -582,9 +626,10 @@ function renderExamsBlock() {
   const sizes = examSizes();
   const nextSize = (Math.floor(count / EXAM_STEP) + 1) * EXAM_STEP;
   const missing = nextSize - count;
-  const upcoming = nextSize <= KANJI.length
-    ? `<p class="muted">${sizes.length ? 'Prochain examen' : 'Premier examen'} à ${nextSize} kanji appris : encore ${missing}.</p>`
-    : '';
+  const upcoming =
+    nextSize <= KANJI.length
+      ? `<p class="muted">${sizes.length ? 'Prochain examen' : 'Premier examen'} à ${nextSize} kanji appris : encore ${missing}.</p>`
+      : '';
   const buttons = sizes
     .map((size) => {
       const result = kanjiStore.exams[size];
@@ -688,6 +733,13 @@ function onKanjiClick(event) {
   }
   if (target.closest('.kj-back')) {
     goTo('#kanji');
+    return;
+  }
+  const level = target.closest('.kj-level');
+  if (level) {
+    kanjiStore.level = level.dataset.level === 'all' ? 'all' : Number(level.dataset.level);
+    saveKanjiStore();
+    renderRoute();
     return;
   }
   const furi = target.closest('.kj-furi');

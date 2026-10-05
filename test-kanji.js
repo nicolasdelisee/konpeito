@@ -14,7 +14,7 @@ const check = (label, cond, extra = '') => {
 
 const { createDom } = require('./test-dom.js');
 
-const { id, document, memory } = createDom();
+const { El, id, document, memory } = createDom();
 
 // A location whose hash changes fire `hashchange`, like a browser's.
 const hashListeners = [];
@@ -53,26 +53,35 @@ const problems = [];
 KANJI.forEach((card) => {
   const where = `${card.k} :`;
   if (!groupIds.has(card.g)) problems.push(`${where} groupe inconnu ${card.g}`);
-  if (!Number.isInteger(card.strokes) || card.strokes < 1) problems.push(`${where} nombre de traits`);
+  if (![5, 4, 3, 2, 1].includes(card.n)) problems.push(`${where} niveau JLPT ${card.n}`);
+  if (!Number.isInteger(card.strokes) || card.strokes < 1)
+    problems.push(`${where} nombre de traits`);
   if (!card.fr) problems.push(`${where} pas de sens`);
   card.on.forEach((r) => KATAKANA.test(r) || problems.push(`${where} ON pas en katakana : ${r}`));
   card.kun.forEach((r) => HIRAGANA.test(r) || problems.push(`${where} KUN mal formé : ${r}`));
   if (card.words.length < 2) problems.push(`${where} moins de deux mots`);
   card.words.forEach((word) => {
-    if (!word.w.includes(card.k)) problems.push(`${where} le mot ${word.w} ne contient pas le kanji`);
-    if (!['on', 'kun', 'sp'].includes(word.y)) problems.push(`${where} ${word.w} : lecture ${word.y}`);
+    if (!word.w.includes(card.k))
+      problems.push(`${where} le mot ${word.w} ne contient pas le kanji`);
+    if (!['on', 'kun', 'sp'].includes(word.y))
+      problems.push(`${where} ${word.w} : lecture ${word.y}`);
     if (!word.r || !word.fr) problems.push(`${where} ${word.w} incomplet`);
   });
   if (card.phrases.length < 2) problems.push(`${where} moins de deux phrases`);
   card.phrases.forEach(({ jp, fr }) => {
     if (!fr) problems.push(`${where} phrase sans traduction`);
     const segments = parseRuby(jp);
-    const bare = segments.filter((s) => s.text).map((s) => s.text).join('');
+    const bare = segments
+      .filter((s) => s.text)
+      .map((s) => s.text)
+      .join('');
     if (kanjiIn(bare).length) problems.push(`${where} kanji sans lecture dans « ${jp} »`);
     if (/[[\]]/.test(bare)) problems.push(`${where} crochet orphelin dans « ${jp} »`);
     segments
       .filter((s) => s.base)
-      .forEach((s) => KANA_ONLY.test(s.reading) || problems.push(`${where} lecture « ${s.reading} »`));
+      .forEach(
+        (s) => KANA_ONLY.test(s.reading) || problems.push(`${where} lecture « ${s.reading} »`),
+      );
     if (!segments.some((s) => s.base && s.base.includes(card.k))) {
       problems.push(`${where} la phrase n’utilise pas le kanji : « ${jp} »`);
     }
@@ -81,8 +90,15 @@ KANJI.forEach((card) => {
 });
 problems.forEach((p) => console.log(`       ${p}`));
 check('fiches bien formées', problems.length === 0, `(${problems.length} problème(s))`);
-check('pas de doublon', new Set(KANJI.map((c) => c.k)).size === KANJI.length, `(${KANJI.length} kanji)`);
-check('chaque groupe a des kanji', KANJI_GROUPS.every((g) => KANJI.some((c) => c.g === g.id)));
+check(
+  'pas de doublon',
+  new Set(KANJI.map((c) => c.k)).size === KANJI.length,
+  `(${KANJI.length} kanji)`,
+);
+check(
+  'chaque groupe a des kanji',
+  KANJI_GROUPS.every((g) => KANJI.some((c) => c.g === g.id)),
+);
 
 // ------------------------------------------------------------------ analysis
 console.log('Liens entre fiches :');
@@ -94,7 +110,11 @@ check(
 check('々 n’est pas un kanji à apprendre', kanjiIn('時々').join('') === '時');
 
 const elsewhere = wordsElsewhere('日').map((w) => w.w);
-check('日 se retrouve dans les mots d’autres fiches', elsewhere.includes('日本人') && elsewhere.includes('日本語'), `(${elsewhere.join(' ')})`);
+check(
+  '日 se retrouve dans les mots d’autres fiches',
+  elsewhere.includes('日本人') && elsewhere.includes('日本語'),
+  `(${elsewhere.join(' ')})`,
+);
 check('… sans répéter ceux de sa propre fiche', !elsewhere.includes('毎日'));
 
 const fromNothing = suggestNext(new Set());
@@ -102,7 +122,9 @@ check('sans rien savoir, on propose un kanji', !!fromNothing, fromNothing && fro
 const afterWater = suggestNext(new Set(['水', '日', '大']));
 check(
   'la suggestion débloque des mots lisibles',
-  afterWater.words.every((w) => kanjiIn(w.w).every((k) => ['水', '日', '大', afterWater.card.k].includes(k))),
+  afterWater.words.every((w) =>
+    kanjiIn(w.w).every((k) => ['水', '日', '大', afterWater.card.k].includes(k)),
+  ),
   `(${afterWater.card.k} → ${afterWater.words.map((w) => w.w).join(' ')})`,
 );
 check('ALL_WORDS sans doublon', new Set(ALL_WORDS.map((w) => w.w)).size === ALL_WORDS.length);
@@ -127,9 +149,15 @@ check('la fiche de 水 s’ouvre', html.includes('kj-glyph') && html.includes('>
 check('lectures ON et KUN', html.includes('スイ') && html.includes('みず'));
 check('les mots sont listés', html.includes('水着') && html.includes('maillot de bain'));
 check('les phrases ont des furigana', html.includes('<rt>すいちゅう</rt>'));
-check('le kanji de la fiche ressort dans les phrases', html.includes('<span class="kj-target">水</span>'));
+check(
+  'le kanji de la fiche ressort dans les phrases',
+  html.includes('<span class="kj-target">水</span>'),
+);
 check('中 est un lien vers sa fiche', html.includes('data-k="中"'));
-check('mode auto : rien n’est appris, toutes les lectures visibles', !html.includes('kj-ruby is-hidden'));
+check(
+  'mode auto : rien n’est appris, toutes les lectures visibles',
+  !html.includes('kj-ruby is-hidden'),
+);
 
 // Mark 水 as learned from the card itself.
 const learnBtn = Object.assign(new (require('./test-dom.js').El)(), { _class: 'kj-learn' });
@@ -139,6 +167,15 @@ check('… et enregistré', JSON.parse(memory.get('konpeito.kanji.v1')).learned.
 check('furigana masqués sur les kanji appris', view.innerHTML.includes('kj-ruby is-hidden'));
 check('le bouton dit « Appris »', view.innerHTML.includes('✓ Appris'));
 check('水 est lisible', view.innerHTML.includes('✓ tu peux le lire'));
+
+const levelBtn = (level) => Object.assign(new El(), { _class: 'kj-level', dataset: { level } });
+window.location.hash = '#kanji';
+view.fire('click', { target: levelBtn('5') });
+check('filtre N5 : toutes les tuiles N5', (view.innerHTML.match(/class="kj-open kj-tile/g) || []).length === KANJI.filter((c) => c.n === 5).length);
+check('… le niveau est annoncé', view.innerHTML.includes('du niveau N5'));
+check('les niveaux sans fiche sont « à venir »', view.innerHTML.includes('à venir'));
+view.fire('click', { target: levelBtn('all') });
+check('filtre « Tous »', globalThis.__scope.kanjiStore.level === 'all');
 
 window.location.hash = '#kanji/inconnu';
 check('kanji inconnu → retour à la liste', view.innerHTML.includes('kj-tiles'));
@@ -151,15 +188,18 @@ check('flèche droite → kanji suivant', window.location.hash === '#kanji/木',
 
 // --------------------------------------------------------------------- exams
 console.log('Examens :');
-const { El } = require('./test-dom.js');
-const click = (cls, dataset = {}) => view.fire('click', { target: Object.assign(new El(), { _class: cls, dataset }) });
+const click = (cls, dataset = {}) =>
+  view.fire('click', { target: Object.assign(new El(), { _class: cls, dataset }) });
 const store = globalThis.__scope.kanjiStore;
 const { currentExam, buildExam } = globalThis.__scope;
 
 store.learned = ['水'];
 window.location.hash = '#kanji';
 check('pas d’examen avant 5 kanji', !view.innerHTML.includes('kj-exam-btn'));
-check('… mais on annonce le premier', view.innerHTML.includes('Premier examen à 5 kanji appris : encore 4'));
+check(
+  '… mais on annonce le premier',
+  view.innerHTML.includes('Premier examen à 5 kanji appris : encore 4'),
+);
 window.location.hash = '#kanji/examen/5';
 check('examen pas encore ouvert → liste', !currentExam() && view.innerHTML.includes('kj-tiles'));
 
@@ -167,8 +207,15 @@ check('examen pas encore ouvert → liste', !currentExam() && view.innerHTML.inc
 store.learned = ['日', '大', '水', '一'];
 window.location.hash = '#kanji/人';
 click('kj-learn');
-check('5ᵉ kanji appris → bannière d’examen', view.innerHTML.includes('L’examen sur les 5 est prêt'));
-check('l’ordre d’apprentissage est gardé', store.learned.join('') === '日大水一人', store.learned.join(''));
+check(
+  '5ᵉ kanji appris → bannière d’examen',
+  view.innerHTML.includes('L’examen sur les 5 est prêt'),
+);
+check(
+  'l’ordre d’apprentissage est gardé',
+  store.learned.join('') === '日大水一人',
+  store.learned.join(''),
+);
 
 click('kj-exam-start', { n: '5' });
 let ex = currentExam();
@@ -180,7 +227,9 @@ check(
 );
 check(
   'quatre propositions distinctes, une seule bonne',
-  ex.questions.every((q) => q.options.length === 4 && new Set(q.options).size === 4 && q.answer >= 0),
+  ex.questions.every(
+    (q) => q.options.length === 4 && new Set(q.options).size === 4 && q.answer >= 0,
+  ),
 );
 check(
   'les mots demandés ne contiennent que des kanji de l’examen',
@@ -192,7 +241,10 @@ check(
 // Furigana toggling must not restart the exam.
 const firstPrompt = ex.questions[0].prompt;
 click('kj-furi', { furi: 'always' });
-check('changer les furigana ne relance pas l’examen', currentExam() === ex && ex.questions[0].prompt === firstPrompt);
+check(
+  'changer les furigana ne relance pas l’examen',
+  currentExam() === ex && ex.questions[0].prompt === firstPrompt,
+);
 
 // One wrong answer, then all right, alternating click and keyboard.
 ex.questions.forEach((q, i) => {
@@ -205,8 +257,14 @@ ex.questions.forEach((q, i) => {
 });
 check('examen terminé', ex.done && view.innerHTML.includes('Examen des 5 kanji'));
 check('score 9 / 10', ex.score === 9 && view.innerHTML.includes('<strong>90</strong>%'));
-check('l’erreur est listée avec un lien vers sa fiche', view.innerHTML.includes('À revoir') && view.innerHTML.includes(`data-k="${ex.missed[0].card.k}"`));
-check('meilleur score enregistré', JSON.parse(memory.get('konpeito.kanji.v1')).exams['5'].best === 90);
+check(
+  'l’erreur est listée avec un lien vers sa fiche',
+  view.innerHTML.includes('À revoir') && view.innerHTML.includes(`data-k="${ex.missed[0].card.k}"`),
+);
+check(
+  'meilleur score enregistré',
+  JSON.parse(memory.get('konpeito.kanji.v1')).exams['5'].best === 90,
+);
 
 window.location.hash = '#kanji';
 check('le score apparaît dans la liste', view.innerHTML.includes('kj-exam-badge is-passed">90 %'));
@@ -217,7 +275,10 @@ store.learned = KANJI.map((c) => c.k);
 const big = buildExam(70);
 const latest = store.learned.slice(65, 70);
 check('examen plafonné à 30 questions', big.questions.length === 30, `(${big.questions.length})`);
-check('les 5 derniers kanji y sont toujours', latest.every((k) => big.questions.some((q) => q.card.k === k)));
+check(
+  'les 5 derniers kanji y sont toujours',
+  latest.every((k) => big.questions.some((q) => q.card.k === k)),
+);
 store.learned = [];
 
 window.location.hash = '#kana';

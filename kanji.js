@@ -4,6 +4,8 @@
  * Fields:
  *   k        the kanji
  *   g        group id (see KANJI_GROUPS), only used to lay the list out
+ *   n        JLPT level, 5 (easiest) to 1. The JLPT stopped publishing kanji
+ *            lists in 2010: this follows the usual unofficial N5–N1 lists.
  *   fr       meaning(s), in French
  *   strokes  stroke count
  *   on, kun  readings. A dot marks the okurigana: 'おお.きい' → 大きい
@@ -17,12 +19,16 @@
  * Words and sentences favour everyday vocabulary that comes back everywhere,
  * and lean on the other kanji of this file so the cards link to each other.
  */
+const KANJI_LEVELS = [5, 4, 3, 2, 1];
+
 const KANJI_GROUPS = [
   { id: 'nombres', label: 'Les nombres' },
   { id: 'jours', label: 'Les jours et les éléments' },
   { id: 'temps', label: 'Le temps' },
   { id: 'gens', label: 'Les gens' },
   { id: 'places', label: 'Tailles et positions' },
+  { id: 'directions', label: 'Les directions' },
+  { id: 'qualites', label: 'Les qualités' },
   { id: 'nature', label: 'Nature et météo' },
   { id: 'corps', label: 'Le corps' },
   { id: 'actions', label: 'Les actions' },
@@ -34,6 +40,7 @@ const KANJI = [
   {
     k: '一',
     g: 'nombres',
+    n: 5,
     fr: 'un',
     strokes: 1,
     on: ['イチ', 'イツ'],
@@ -56,6 +63,7 @@ const KANJI = [
   {
     k: '二',
     g: 'nombres',
+    n: 5,
     fr: 'deux',
     strokes: 2,
     on: ['ニ'],
@@ -75,6 +83,7 @@ const KANJI = [
   {
     k: '三',
     g: 'nombres',
+    n: 5,
     fr: 'trois',
     strokes: 3,
     on: ['サン'],
@@ -95,6 +104,7 @@ const KANJI = [
   {
     k: '四',
     g: 'nombres',
+    n: 5,
     fr: 'quatre',
     strokes: 5,
     on: ['シ'],
@@ -106,7 +116,10 @@ const KANJI = [
       { w: '四時', r: 'よじ', fr: 'quatre heures', y: 'kun' },
     ],
     phrases: [
-      { jp: '四月[しがつ]から 学校[がっこう]が 始[はじ]まります。', fr: 'L’école commence en avril.' },
+      {
+        jp: '四月[しがつ]から 学校[がっこう]が 始[はじ]まります。',
+        fr: 'L’école commence en avril.',
+      },
       { jp: 'いすが 四[よっ]つ あります。', fr: 'Il y a quatre chaises.' },
     ],
     notes: [
@@ -117,6 +130,7 @@ const KANJI = [
   {
     k: '五',
     g: 'nombres',
+    n: 5,
     fr: 'cinq',
     strokes: 4,
     on: ['ゴ'],
@@ -135,6 +149,7 @@ const KANJI = [
   {
     k: '六',
     g: 'nombres',
+    n: 5,
     fr: 'six',
     strokes: 4,
     on: ['ロク'],
@@ -154,6 +169,7 @@ const KANJI = [
   {
     k: '七',
     g: 'nombres',
+    n: 5,
     fr: 'sept',
     strokes: 2,
     on: ['シチ'],
@@ -173,6 +189,7 @@ const KANJI = [
   {
     k: '八',
     g: 'nombres',
+    n: 5,
     fr: 'huit',
     strokes: 2,
     on: ['ハチ'],
@@ -193,6 +210,7 @@ const KANJI = [
   {
     k: '九',
     g: 'nombres',
+    n: 5,
     fr: 'neuf',
     strokes: 2,
     on: ['キュウ', 'ク'],
@@ -212,6 +230,7 @@ const KANJI = [
   {
     k: '十',
     g: 'nombres',
+    n: 5,
     fr: 'dix',
     strokes: 2,
     on: ['ジュウ'],
@@ -226,11 +245,14 @@ const KANJI = [
       { jp: '十時[じゅうじ]に 会[あ]いましょう。', fr: 'Retrouvons-nous à 10 heures.' },
       { jp: '駅[えき]まで 十分[じゅっぷん]です。', fr: 'La gare est à dix minutes.' },
     ],
-    notes: ['十分 se lit じゅっぷん (« dix minutes ») mais aussi じゅうぶん (« assez, suffisant »).'],
+    notes: [
+      '十分 se lit じゅっぷん (« dix minutes ») mais aussi じゅうぶん (« assez, suffisant »).',
+    ],
   },
   {
     k: '百',
     g: 'nombres',
+    n: 5,
     fr: 'cent',
     strokes: 6,
     on: ['ヒャク'],
@@ -243,14 +265,21 @@ const KANJI = [
     ],
     phrases: [
       { jp: 'この ペンは 百円[ひゃくえん]です。', fr: 'Ce stylo coûte cent yens.' },
-      { jp: '三百円[さんびゃくえん]の ケーキを 買[か]いました。', fr: 'J’ai acheté un gâteau à 300 yens.' },
+      {
+        jp: '三百円[さんびゃくえん]の ケーキを 買[か]いました。',
+        fr: 'J’ai acheté un gâteau à 300 yens.',
+      },
     ],
-    notes: ['Le son change : 300 = さんびゃく, 600 = ろっぴゃく, 800 = はっぴゃく.', '百 = 一 + 白 (blanc).'],
+    notes: [
+      'Le son change : 300 = さんびゃく, 600 = ろっぴゃく, 800 = はっぴゃく.',
+      '百 = 一 + 白 (blanc).',
+    ],
     see: ['白'],
   },
   {
     k: '千',
     g: 'nombres',
+    n: 5,
     fr: 'mille',
     strokes: 3,
     on: ['セン'],
@@ -269,6 +298,7 @@ const KANJI = [
   {
     k: '万',
     g: 'nombres',
+    n: 5,
     fr: 'dix mille',
     strokes: 3,
     on: ['マン', 'バン'],
@@ -282,11 +312,14 @@ const KANJI = [
       { jp: '一万円[いちまんえん]は 高[たか]いです。', fr: 'Dix mille yens, c’est cher.' },
       { jp: '二万人[にまんにん]が 来[き]ました。', fr: 'Vingt mille personnes sont venues.' },
     ],
-    notes: ['Le japonais compte par paquets de 10 000 : 100 000 se dit 十万 (じゅうまん), « dix dix-mille ».'],
+    notes: [
+      'Le japonais compte par paquets de 10 000 : 100 000 se dit 十万 (じゅうまん), « dix dix-mille ».',
+    ],
   },
   {
     k: '円',
     g: 'nombres',
+    n: 5,
     fr: 'yen ; cercle',
     strokes: 4,
     on: ['エン'],
@@ -307,6 +340,7 @@ const KANJI = [
   {
     k: '日',
     g: 'jours',
+    n: 5,
     fr: 'jour, soleil',
     strokes: 4,
     on: ['ニチ', 'ジツ'],
@@ -333,6 +367,7 @@ const KANJI = [
   {
     k: '月',
     g: 'jours',
+    n: 5,
     fr: 'lune, mois',
     strokes: 4,
     on: ['ゲツ', 'ガツ'],
@@ -346,7 +381,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: '月[つき]が きれいです。', fr: 'La lune est belle.' },
-      { jp: '来月[らいげつ]、日本[にほん]へ 行[い]きます。', fr: 'Le mois prochain, je vais au Japon.' },
+      {
+        jp: '来月[らいげつ]、日本[にほん]へ 行[い]きます。',
+        fr: 'Le mois prochain, je vais au Japon.',
+      },
     ],
     notes: ['ガツ pour les mois de l’année (一月, janvier), ゲツ pour lundi et 来月.'],
     see: ['日'],
@@ -354,6 +392,7 @@ const KANJI = [
   {
     k: '火',
     g: 'jours',
+    n: 5,
     fr: 'feu',
     strokes: 4,
     on: ['カ'],
@@ -366,13 +405,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '火曜日[かようび]に 会[あ]いましょう。', fr: 'Retrouvons-nous mardi.' },
-      { jp: '夏[なつ]に 花火[はなび]を 見[み]ます。', fr: 'En été, on regarde les feux d’artifice.' },
+      {
+        jp: '夏[なつ]に 花火[はなび]を 見[み]ます。',
+        fr: 'En été, on regarde les feux d’artifice.',
+      },
     ],
     notes: ['Dans 花火, ひ devient び.'],
   },
   {
     k: '水',
     g: 'jours',
+    n: 5,
     fr: 'eau',
     strokes: 4,
     on: ['スイ'],
@@ -392,6 +435,7 @@ const KANJI = [
   {
     k: '木',
     g: 'jours',
+    n: 5,
     fr: 'arbre, bois',
     strokes: 4,
     on: ['モク', 'ボク'],
@@ -411,6 +455,7 @@ const KANJI = [
   {
     k: '金',
     g: 'jours',
+    n: 5,
     fr: 'or, argent (monnaie)',
     strokes: 8,
     on: ['キン', 'コン'],
@@ -429,6 +474,7 @@ const KANJI = [
   {
     k: '土',
     g: 'jours',
+    n: 5,
     fr: 'terre, sol',
     strokes: 3,
     on: ['ド', 'ト'],
@@ -440,7 +486,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: '土曜日[どようび]は 休[やす]みです。', fr: 'Samedi, je suis en congé.' },
-      { jp: '日本[にほん]の お土産[みやげ]を 買[か]いました。', fr: 'J’ai acheté un souvenir du Japon.' },
+      {
+        jp: '日本[にほん]の お土産[みやげ]を 買[か]いました。',
+        fr: 'J’ai acheté un souvenir du Japon.',
+      },
     ],
     notes: [
       'La semaine japonaise : 日 月 火 水 木 金 土 — soleil, lune, puis les cinq éléments.',
@@ -452,6 +501,7 @@ const KANJI = [
   {
     k: '年',
     g: 'temps',
+    n: 5,
     fr: 'année, âge',
     strokes: 6,
     on: ['ネン'],
@@ -464,13 +514,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '今年[ことし]、日本[にほん]へ 行[い]きます。', fr: 'Cette année, je vais au Japon.' },
-      { jp: '日本語[にほんご]を 一年[いちねん] 勉強[べんきょう]しました。', fr: 'J’ai étudié le japonais pendant un an.' },
+      {
+        jp: '日本語[にほんご]を 一年[いちねん] 勉強[べんきょう]しました。',
+        fr: 'J’ai étudié le japonais pendant un an.',
+      },
     ],
     notes: ['今年 (ことし) se lit d’un bloc. 毎年 se dit まいとし ou まいねん.'],
   },
   {
     k: '今',
     g: 'temps',
+    n: 5,
     fr: 'maintenant',
     strokes: 4,
     on: ['コン'],
@@ -491,6 +545,7 @@ const KANJI = [
   {
     k: '何',
     g: 'temps',
+    n: 5,
     fr: 'quoi, quel',
     strokes: 7,
     on: ['カ'],
@@ -513,6 +568,7 @@ const KANJI = [
   {
     k: '時',
     g: 'temps',
+    n: 5,
     fr: 'heure, moment',
     strokes: 10,
     on: ['ジ'],
@@ -526,13 +582,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '今[いま]、三時[さんじ]です。', fr: 'Il est trois heures.' },
-      { jp: '時々[ときどき] 日本[にほん]の えいがを 見[み]ます。', fr: 'Je regarde parfois des films japonais.' },
+      {
+        jp: '時々[ときどき] 日本[にほん]の えいがを 見[み]ます。',
+        fr: 'Je regarde parfois des films japonais.',
+      },
     ],
     notes: ['々 répète le kanji d’avant : 時々 = 時時.'],
   },
   {
     k: '分',
     g: 'temps',
+    n: 5,
     fr: 'minute ; partager ; comprendre',
     strokes: 4,
     on: ['フン', 'ブン'],
@@ -548,11 +608,14 @@ const KANJI = [
       { jp: '日本語[にほんご]が 分[わ]かります。', fr: 'Je comprends le japonais.' },
       { jp: '五分[ごふん] 待[ま]って ください。', fr: 'Attends cinq minutes, s’il te plaît.' },
     ],
-    notes: ['Minutes : ふん ou ぷん selon le chiffre — 一分 いっぷん, 三分 さんぷん, 五分 ごふん, 十分 じゅっぷん.'],
+    notes: [
+      'Minutes : ふん ou ぷん selon le chiffre — 一分 いっぷん, 三分 さんぷん, 五分 ごふん, 十分 じゅっぷん.',
+    ],
   },
   {
     k: '半',
     g: 'temps',
+    n: 5,
     fr: 'moitié, et demie',
     strokes: 5,
     on: ['ハン'],
@@ -570,6 +633,7 @@ const KANJI = [
   {
     k: '毎',
     g: 'temps',
+    n: 5,
     fr: 'chaque',
     strokes: 6,
     on: ['マイ'],
@@ -583,13 +647,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '毎朝[まいあさ] コーヒーを 飲[の]みます。', fr: 'Je bois un café chaque matin.' },
-      { jp: '毎週[まいしゅう] 日本語[にほんご]を 勉強[べんきょう]します。', fr: 'J’étudie le japonais chaque semaine.' },
+      {
+        jp: '毎週[まいしゅう] 日本語[にほんご]を 勉強[べんきょう]します。',
+        fr: 'J’étudie le japonais chaque semaine.',
+      },
     ],
     notes: ['毎 + une durée = « chaque ». Tu connais déjà まいにち : c’est 毎日.'],
   },
   {
     k: '午',
     g: 'temps',
+    n: 5,
     fr: 'midi',
     strokes: 4,
     on: ['ゴ'],
@@ -607,6 +675,7 @@ const KANJI = [
   {
     k: '前',
     g: 'temps',
+    n: 5,
     fr: 'devant, avant',
     strokes: 9,
     on: ['ゼン'],
@@ -626,6 +695,7 @@ const KANJI = [
   {
     k: '後',
     g: 'temps',
+    n: 5,
     fr: 'après, derrière',
     strokes: 9,
     on: ['ゴ', 'コウ'],
@@ -640,14 +710,69 @@ const KANJI = [
       { jp: '後[あと]で 電話[でんわ]します。', fr: 'Je t’appelle plus tard.' },
       { jp: '午後[ごご]、公園[こうえん]へ 行[い]きます。', fr: 'Cet après-midi, je vais au parc.' },
     ],
-    notes: ['Le même kanji donne あと (« après ») et うしろ (« derrière ») : c’est l’okurigana qui tranche.'],
+    notes: [
+      'Le même kanji donne あと (« après ») et うしろ (« derrière ») : c’est l’okurigana qui tranche.',
+    ],
     see: ['前'],
+  },
+
+  {
+    k: '週',
+    g: 'temps',
+    n: 5,
+    fr: 'semaine',
+    strokes: 11,
+    on: ['シュウ'],
+    kun: [],
+    words: [
+      { w: '今週', r: 'こんしゅう', fr: 'cette semaine', y: 'on' },
+      { w: '来週', r: 'らいしゅう', fr: 'la semaine prochaine', y: 'on' },
+      { w: '先週', r: 'せんしゅう', fr: 'la semaine dernière', y: 'on' },
+      { w: '毎週', r: 'まいしゅう', fr: 'chaque semaine', y: 'on' },
+      { w: '週末', r: 'しゅうまつ', fr: 'le week-end', y: 'on' },
+    ],
+    phrases: [
+      { jp: '来週[らいしゅう]、テストが あります。', fr: 'J’ai un contrôle la semaine prochaine.' },
+      { jp: '週末[しゅうまつ]は 何[なに]を しますか。', fr: 'Que fais-tu ce week-end ?' },
+    ],
+    notes: [
+      '先週 / 今週 / 来週 : la semaine dernière, cette semaine, la semaine prochaine. Même schéma avec 月 : 先月 / 今月 / 来月.',
+    ],
+    see: ['先', '今', '来'],
+  },
+  {
+    k: '間',
+    g: 'temps',
+    n: 5,
+    fr: 'intervalle, entre',
+    strokes: 12,
+    on: ['カン', 'ケン'],
+    kun: ['あいだ', 'ま'],
+    words: [
+      { w: '時間', r: 'じかん', fr: 'le temps, une durée', y: 'on' },
+      { w: '一時間', r: 'いちじかん', fr: 'une heure (de durée)', y: 'on' },
+      { w: '間', r: 'あいだ', fr: 'entre ; pendant', y: 'kun' },
+      { w: '人間', r: 'にんげん', fr: 'l’être humain', y: 'on' },
+    ],
+    phrases: [
+      { jp: '一時間[いちじかん] 待[ま]ちました。', fr: 'J’ai attendu une heure.' },
+      {
+        jp: '駅[えき]と 学校[がっこう]の 間[あいだ]に 公園[こうえん]が あります。',
+        fr: 'Il y a un parc entre la gare et l’école.',
+      },
+    ],
+    notes: [
+      '間 = 日 (le soleil) qui passe entre les battants d’une porte (門).',
+      '三時 = trois heures (le moment) ; 三時間 = trois heures (la durée).',
+    ],
+    see: ['時'],
   },
 
   // --------------------------------------------------------------- gens
   {
     k: '人',
     g: 'gens',
+    n: 5,
     fr: 'personne',
     strokes: 2,
     on: ['ジン', 'ニン'],
@@ -672,6 +797,7 @@ const KANJI = [
   {
     k: '子',
     g: 'gens',
+    n: 5,
     fr: 'enfant',
     strokes: 3,
     on: ['シ', 'ス'],
@@ -685,13 +811,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '子[こ]どもが 二人[ふたり] います。', fr: 'J’ai deux enfants.' },
-      { jp: '公園[こうえん]で 男[おとこ]の 子[こ]が 遊[あそ]んで います。', fr: 'Un garçon joue au parc.' },
+      {
+        jp: '公園[こうえん]で 男[おとこ]の 子[こ]が 遊[あそ]んで います。',
+        fr: 'Un garçon joue au parc.',
+      },
     ],
     notes: ['椅子 s’écrit presque toujours いす, en kana.'],
   },
   {
     k: '女',
     g: 'gens',
+    n: 5,
     fr: 'femme',
     strokes: 3,
     on: ['ジョ', 'ニョ'],
@@ -711,6 +841,7 @@ const KANJI = [
   {
     k: '男',
     g: 'gens',
+    n: 5,
     fr: 'homme',
     strokes: 7,
     on: ['ダン', 'ナン'],
@@ -730,6 +861,7 @@ const KANJI = [
   {
     k: '父',
     g: 'gens',
+    n: 5,
     fr: 'père',
     strokes: 4,
     on: ['フ'],
@@ -749,6 +881,7 @@ const KANJI = [
   {
     k: '母',
     g: 'gens',
+    n: 5,
     fr: 'mère',
     strokes: 5,
     on: ['ボ'],
@@ -768,6 +901,7 @@ const KANJI = [
   {
     k: '友',
     g: 'gens',
+    n: 5,
     fr: 'ami',
     strokes: 4,
     on: ['ユウ'],
@@ -787,6 +921,7 @@ const KANJI = [
   {
     k: '先',
     g: 'gens',
+    n: 5,
     fr: 'précédent, en avance',
     strokes: 6,
     on: ['セン'],
@@ -799,13 +934,17 @@ const KANJI = [
     ],
     phrases: [
       { jp: '先生[せんせい]に 聞[き]きます。', fr: 'Je demande au professeur.' },
-      { jp: '先週[せんしゅう]、山[やま]へ 行[い]きました。', fr: 'La semaine dernière, je suis allé à la montagne.' },
+      {
+        jp: '先週[せんしゅう]、山[やま]へ 行[い]きました。',
+        fr: 'La semaine dernière, je suis allé à la montagne.',
+      },
     ],
     notes: ['先生 = « né avant » : celui qui a de l’avance, d’où le professeur.'],
   },
   {
     k: '生',
     g: 'gens',
+    n: 5,
     fr: 'vie, naître',
     strokes: 5,
     on: ['セイ', 'ショウ'],
@@ -821,11 +960,14 @@ const KANJI = [
       { jp: 'わたしは 学生[がくせい]です。', fr: 'Je suis étudiant.' },
       { jp: 'パリで 生[う]まれました。', fr: 'Je suis né à Paris.' },
     ],
-    notes: ['L’un des kanji aux lectures les plus nombreuses : apprends-les par les mots, pas en liste.'],
+    notes: [
+      'L’un des kanji aux lectures les plus nombreuses : apprends-les par les mots, pas en liste.',
+    ],
   },
   {
     k: '名',
     g: 'gens',
+    n: 5,
     fr: 'nom, renommée',
     strokes: 6,
     on: ['メイ', 'ミョウ'],
@@ -837,7 +979,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: 'わたしの 名前[なまえ]は 田中[たなか]です。', fr: 'Je m’appelle Tanaka.' },
-      { jp: '富士山[ふじさん]は 有名[ゆうめい]な 山[やま]です。', fr: 'Le Fuji est une montagne célèbre.' },
+      {
+        jp: '富士山[ふじさん]は 有名[ゆうめい]な 山[やま]です。',
+        fr: 'Le Fuji est une montagne célèbre.',
+      },
     ],
   },
 
@@ -845,6 +990,7 @@ const KANJI = [
   {
     k: '大',
     g: 'places',
+    n: 5,
     fr: 'grand, gros',
     strokes: 3,
     on: ['ダイ', 'タイ'],
@@ -870,6 +1016,7 @@ const KANJI = [
   {
     k: '小',
     g: 'places',
+    n: 5,
     fr: 'petit',
     strokes: 3,
     on: ['ショウ'],
@@ -888,6 +1035,7 @@ const KANJI = [
   {
     k: '中',
     g: 'places',
+    n: 5,
     fr: 'milieu, dedans',
     strokes: 4,
     on: ['チュウ'],
@@ -902,11 +1050,14 @@ const KANJI = [
       { jp: 'かばんの 中[なか]に 本[ほん]が あります。', fr: 'Il y a un livre dans le sac.' },
       { jp: '一日中[いちにちじゅう] 雨[あめ]でした。', fr: 'Il a plu toute la journée.' },
     ],
-    notes: ['Après une durée, 中 se lit じゅう : 一日中 (toute la journée), 一年中 (toute l’année).'],
+    notes: [
+      'Après une durée, 中 se lit じゅう : 一日中 (toute la journée), 一年中 (toute l’année).',
+    ],
   },
   {
     k: '上',
     g: 'places',
+    n: 5,
     fr: 'dessus, haut',
     strokes: 3,
     on: ['ジョウ'],
@@ -926,6 +1077,7 @@ const KANJI = [
   {
     k: '下',
     g: 'places',
+    n: 5,
     fr: 'dessous, bas',
     strokes: 3,
     on: ['カ', 'ゲ'],
@@ -946,6 +1098,7 @@ const KANJI = [
   {
     k: '右',
     g: 'places',
+    n: 5,
     fr: 'droite',
     strokes: 5,
     on: ['ウ', 'ユウ'],
@@ -968,6 +1121,7 @@ const KANJI = [
   {
     k: '左',
     g: 'places',
+    n: 5,
     fr: 'gauche',
     strokes: 5,
     on: ['サ'],
@@ -987,6 +1141,7 @@ const KANJI = [
   {
     k: '外',
     g: 'places',
+    n: 5,
     fr: 'dehors, extérieur',
     strokes: 5,
     on: ['ガイ', 'ゲ'],
@@ -1003,10 +1158,247 @@ const KANJI = [
     see: ['中'],
   },
 
+  // --------------------------------------------------------- directions
+  {
+    k: '東',
+    g: 'directions',
+    n: 5,
+    fr: 'est',
+    strokes: 8,
+    on: ['トウ'],
+    kun: ['ひがし'],
+    words: [
+      { w: '東', r: 'ひがし', fr: 'l’est', y: 'kun' },
+      { w: '東京', r: 'とうきょう', fr: 'Tokyo', y: 'on' },
+      { w: '東口', r: 'ひがしぐち', fr: 'la sortie est', y: 'kun' },
+    ],
+    phrases: [
+      { jp: '東京[とうきょう]に 住[す]んで います。', fr: 'J’habite à Tokyo.' },
+      { jp: '日[ひ]は 東[ひがし]から 出[で]ます。', fr: 'Le soleil se lève à l’est.' },
+    ],
+    notes: [
+      '東 = le soleil 日 derrière un arbre 木 : là où il se lève.',
+      '東京 = « la capitale de l’est ».',
+    ],
+    see: ['西', '日', '木'],
+  },
+  {
+    k: '西',
+    g: 'directions',
+    n: 5,
+    fr: 'ouest',
+    strokes: 6,
+    on: ['セイ', 'サイ'],
+    kun: ['にし'],
+    words: [
+      { w: '西', r: 'にし', fr: 'l’ouest', y: 'kun' },
+      { w: '西口', r: 'にしぐち', fr: 'la sortie ouest', y: 'kun' },
+      { w: '関西', r: 'かんさい', fr: 'le Kansai (région d’Osaka et Kyoto)', y: 'on' },
+    ],
+    phrases: [
+      { jp: '西口[にしぐち]は どこですか。', fr: 'Où est la sortie ouest ?' },
+      { jp: '大阪[おおさか]は 関西[かんさい]に あります。', fr: 'Osaka se trouve dans le Kansai.' },
+    ],
+    see: ['東'],
+  },
+  {
+    k: '南',
+    g: 'directions',
+    n: 5,
+    fr: 'sud',
+    strokes: 9,
+    on: ['ナン'],
+    kun: ['みなみ'],
+    words: [
+      { w: '南', r: 'みなみ', fr: 'le sud', y: 'kun' },
+      { w: '南口', r: 'みなみぐち', fr: 'la sortie sud', y: 'kun' },
+      { w: '東南アジア', r: 'とうなんアジア', fr: 'l’Asie du Sud-Est', y: 'on' },
+    ],
+    phrases: [
+      {
+        jp: '南[みなみ]の 国[くに]へ 行[い]きたいです。',
+        fr: 'Je veux aller dans un pays du sud.',
+      },
+      {
+        jp: '沖縄[おきなわ]は 日本[にほん]の 南[みなみ]に あります。',
+        fr: 'Okinawa est au sud du Japon.',
+      },
+    ],
+    see: ['北'],
+  },
+  {
+    k: '北',
+    g: 'directions',
+    n: 5,
+    fr: 'nord',
+    strokes: 5,
+    on: ['ホク'],
+    kun: ['きた'],
+    words: [
+      { w: '北', r: 'きた', fr: 'le nord', y: 'kun' },
+      { w: '北口', r: 'きたぐち', fr: 'la sortie nord', y: 'kun' },
+      { w: '北海道', r: 'ほっかいどう', fr: 'Hokkaidō', y: 'on' },
+      { w: '東北', r: 'とうほく', fr: 'le Tōhoku (nord-est du Japon)', y: 'on' },
+    ],
+    phrases: [
+      { jp: '北海道[ほっかいどう]は さむいです。', fr: 'Il fait froid à Hokkaidō.' },
+      {
+        jp: '駅[えき]の 北口[きたぐち]で 会[あ]いましょう。',
+        fr: 'Retrouvons-nous à la sortie nord de la gare.',
+      },
+    ],
+    notes: [
+      'Deux personnes assises dos à dos : on tourne le dos au nord froid.',
+      'Les gares ont souvent quatre sorties : 東口, 西口, 南口, 北口.',
+    ],
+    see: ['南'],
+  },
+
+  // ------------------------------------------------------------ qualités
+  {
+    k: '古',
+    g: 'qualites',
+    n: 5,
+    fr: 'vieux, ancien',
+    strokes: 5,
+    on: ['コ'],
+    kun: ['ふる.い'],
+    words: [
+      { w: '古い', r: 'ふるい', fr: 'vieux, ancien', y: 'kun' },
+      { w: '中古', r: 'ちゅうこ', fr: 'd’occasion', y: 'on' },
+    ],
+    phrases: [
+      { jp: 'この 本[ほん]は 古[ふる]いです。', fr: 'Ce livre est vieux.' },
+      {
+        jp: '中古[ちゅうこ]の 車[くるま]を 買[か]いました。',
+        fr: 'J’ai acheté une voiture d’occasion.',
+      },
+    ],
+    notes: [
+      '古 = 十 + 口 : ce qui est passé par dix bouches, une vieille histoire.',
+      '古い se dit des choses, pas des gens.',
+    ],
+    see: ['新'],
+  },
+  {
+    k: '新',
+    g: 'qualites',
+    n: 5,
+    fr: 'nouveau, neuf',
+    strokes: 13,
+    on: ['シン'],
+    kun: ['あたら.しい'],
+    words: [
+      { w: '新しい', r: 'あたらしい', fr: 'nouveau, neuf', y: 'kun' },
+      { w: '新聞', r: 'しんぶん', fr: 'le journal', y: 'on' },
+      { w: '新幹線', r: 'しんかんせん', fr: 'le shinkansen', y: 'on' },
+    ],
+    phrases: [
+      { jp: '新[あたら]しい 車[くるま]が ほしいです。', fr: 'Je voudrais une nouvelle voiture.' },
+      {
+        jp: '毎朝[まいあさ] 新聞[しんぶん]を 読[よ]みます。',
+        fr: 'Je lis le journal chaque matin.',
+      },
+    ],
+    see: ['古'],
+  },
+  {
+    k: '安',
+    g: 'qualites',
+    n: 5,
+    fr: 'bon marché ; paisible',
+    strokes: 6,
+    on: ['アン'],
+    kun: ['やす.い'],
+    words: [
+      { w: '安い', r: 'やすい', fr: 'bon marché, pas cher', y: 'kun' },
+      { w: '安心', r: 'あんしん', fr: 'être rassuré', y: 'on' },
+      { w: '安全', r: 'あんぜん', fr: 'la sécurité, sûr', y: 'on' },
+    ],
+    phrases: [
+      { jp: 'この 店[みせ]は 安[やす]いです。', fr: 'Ce magasin est bon marché.' },
+      { jp: '安心[あんしん]して ください。', fr: 'Ne vous inquiétez pas.' },
+    ],
+    notes: [
+      '安 = 女 (une femme) sous un toit : la maison tranquille.',
+      '安い (pas cher) s’oppose à 高い (cher).',
+    ],
+    see: ['高', '女'],
+  },
+  {
+    k: '高',
+    g: 'qualites',
+    n: 5,
+    fr: 'haut ; cher',
+    strokes: 10,
+    on: ['コウ'],
+    kun: ['たか.い'],
+    words: [
+      { w: '高い', r: 'たかい', fr: 'haut ; cher', y: 'kun' },
+      { w: '高校', r: 'こうこう', fr: 'le lycée', y: 'on' },
+      { w: '高校生', r: 'こうこうせい', fr: 'un lycéen', y: 'on' },
+    ],
+    phrases: [
+      { jp: '東京[とうきょう]の ホテルは 高[たか]いです。', fr: 'Les hôtels de Tokyo sont chers.' },
+      { jp: '弟[おとうと]は 高校生[こうこうせい]です。', fr: 'Mon petit frère est lycéen.' },
+    ],
+    notes: [
+      '高い veut dire haut ou cher. Le contraire : 低い (bas) ou 安い (pas cher).',
+      'Un dessin de tour à étages.',
+    ],
+    see: ['安'],
+  },
+  {
+    k: '長',
+    g: 'qualites',
+    n: 5,
+    fr: 'long ; chef',
+    strokes: 8,
+    on: ['チョウ'],
+    kun: ['なが.い'],
+    words: [
+      { w: '長い', r: 'ながい', fr: 'long', y: 'kun' },
+      { w: '社長', r: 'しゃちょう', fr: 'le patron, le PDG', y: 'on' },
+      { w: '校長', r: 'こうちょう', fr: 'le directeur d’école', y: 'on' },
+    ],
+    phrases: [
+      { jp: '長[なが]い 休[やす]みが ほしいです。', fr: 'J’aimerais de longues vacances.' },
+      {
+        jp: '社長[しゃちょう]は 今日[きょう] 休[やす]みです。',
+        fr: 'Le patron est absent aujourd’hui.',
+      },
+    ],
+    notes: ['ちょう à la fin d’un mot = « le chef de… » : 社長, 校長.'],
+  },
+  {
+    k: '白',
+    g: 'qualites',
+    n: 5,
+    fr: 'blanc',
+    strokes: 5,
+    on: ['ハク'],
+    kun: ['しろ', 'しろ.い'],
+    words: [
+      { w: '白い', r: 'しろい', fr: 'blanc', y: 'kun' },
+      { w: '白', r: 'しろ', fr: 'le blanc', y: 'kun' },
+      { w: '面白い', r: 'おもしろい', fr: 'intéressant, drôle', y: 'sp' },
+    ],
+    phrases: [
+      { jp: '白[しろ]い ねこが います。', fr: 'Il y a un chat blanc.' },
+      { jp: 'この 本[ほん]は 面白[おもしろ]いです。', fr: 'Ce livre est intéressant.' },
+    ],
+    notes: [
+      '面白い (おもしろい) se lit d’un bloc : « le visage qui s’éclaire ».',
+      '白 = 日 avec un petit trait en plus : ne pas les confondre.',
+    ],
+    see: ['日', '百'],
+  },
+
   // ------------------------------------------------------------- nature
   {
     k: '山',
     g: 'nature',
+    n: 5,
     fr: 'montagne',
     strokes: 3,
     on: ['サン'],
@@ -1018,7 +1410,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: '夏[なつ]に 山[やま]に 登[のぼ]ります。', fr: 'En été, je fais de la montagne.' },
-      { jp: '富士山[ふじさん]は 日本[にほん]で 一番[いちばん] 高[たか]い 山[やま]です。', fr: 'Le Fuji est la plus haute montagne du Japon.' },
+      {
+        jp: '富士山[ふじさん]は 日本[にほん]で 一番[いちばん] 高[たか]い 山[やま]です。',
+        fr: 'Le Fuji est la plus haute montagne du Japon.',
+      },
     ],
     notes: ['Le Fuji se dit ふじさん : ce さん est le kanji 山, pas le « monsieur » さん.'],
     see: ['川'],
@@ -1026,6 +1421,7 @@ const KANJI = [
   {
     k: '川',
     g: 'nature',
+    n: 5,
     fr: 'rivière',
     strokes: 3,
     on: ['セン'],
@@ -1038,12 +1434,15 @@ const KANJI = [
       { jp: '川[かわ]で 泳[およ]ぎます。', fr: 'Je nage dans la rivière.' },
       { jp: '川[かわ]の 水[みず]は つめたいです。', fr: 'L’eau de la rivière est froide.' },
     ],
-    notes: ['Trois traits qui coulent : c’est un dessin de rivière. Dans les noms, かわ devient souvent がわ.'],
+    notes: [
+      'Trois traits qui coulent : c’est un dessin de rivière. Dans les noms, かわ devient souvent がわ.',
+    ],
     see: ['山', '水'],
   },
   {
     k: '天',
     g: 'nature',
+    n: 5,
     fr: 'ciel',
     strokes: 4,
     on: ['テン'],
@@ -1063,6 +1462,7 @@ const KANJI = [
   {
     k: '気',
     g: 'nature',
+    n: 5,
     fr: 'esprit, énergie, air',
     strokes: 6,
     on: ['キ', 'ケ'],
@@ -1083,6 +1483,7 @@ const KANJI = [
   {
     k: '雨',
     g: 'nature',
+    n: 5,
     fr: 'pluie',
     strokes: 8,
     on: ['ウ'],
@@ -1100,10 +1501,83 @@ const KANJI = [
     notes: ['Les quatre points sous le toit, ce sont les gouttes.'],
   },
 
+  {
+    k: '花',
+    g: 'nature',
+    n: 5,
+    fr: 'fleur',
+    strokes: 7,
+    on: ['カ'],
+    kun: ['はな'],
+    words: [
+      { w: '花', r: 'はな', fr: 'une fleur', y: 'kun' },
+      { w: '花火', r: 'はなび', fr: 'feu d’artifice', y: 'kun' },
+      { w: '花見', r: 'はなみ', fr: 'contempler les cerisiers en fleur', y: 'kun' },
+      { w: '花びん', r: 'かびん', fr: 'un vase', y: 'on' },
+    ],
+    phrases: [
+      { jp: '花[はな]が きれいです。', fr: 'Les fleurs sont belles.' },
+      {
+        jp: '四月[しがつ]に 花見[はなみ]を します。',
+        fr: 'En avril, on va admirer les cerisiers.',
+      },
+    ],
+    notes: [
+      'En haut, 艹 : l’herbe, présente dans beaucoup de noms de plantes.',
+      '花見 : on pique-nique sous les cerisiers en fleur, fin mars – début avril.',
+    ],
+    see: ['火', '見'],
+  },
+  {
+    k: '空',
+    g: 'nature',
+    n: 5,
+    fr: 'ciel ; vide',
+    strokes: 8,
+    on: ['クウ'],
+    kun: ['そら', 'あ.く', 'から'],
+    words: [
+      { w: '空', r: 'そら', fr: 'le ciel', y: 'kun' },
+      { w: '空港', r: 'くうこう', fr: 'l’aéroport', y: 'on' },
+      { w: '空く', r: 'あく', fr: 'se libérer, être libre (une place)', y: 'kun' },
+      { w: '空手', r: 'からて', fr: 'le karaté', y: 'kun' },
+    ],
+    phrases: [
+      { jp: '空[そら]が 青[あお]いです。', fr: 'Le ciel est bleu.' },
+      {
+        jp: '空港[くうこう]まで 電車[でんしゃ]で 行[い]きます。',
+        fr: 'Je vais à l’aéroport en train.',
+      },
+    ],
+    notes: ['空手 (からて) = « la main vide » : un combat sans arme.'],
+    see: ['天'],
+  },
+  {
+    k: '魚',
+    g: 'nature',
+    n: 5,
+    fr: 'poisson',
+    strokes: 11,
+    on: ['ギョ'],
+    kun: ['さかな', 'うお'],
+    words: [
+      { w: '魚', r: 'さかな', fr: 'un poisson', y: 'kun' },
+      { w: '金魚', r: 'きんぎょ', fr: 'un poisson rouge', y: 'on' },
+      { w: '魚屋', r: 'さかなや', fr: 'la poissonnerie', y: 'kun' },
+    ],
+    phrases: [
+      { jp: '魚[さかな]が 大好[だいす]きです。', fr: 'J’adore le poisson.' },
+      { jp: '金魚[きんぎょ]が 三匹[さんびき] います。', fr: 'J’ai trois poissons rouges.' },
+    ],
+    notes: ['Un dessin de poisson : la tête en haut, les écailles au milieu, la queue en bas.'],
+    see: ['金'],
+  },
+
   // -------------------------------------------------------------- corps
   {
     k: '口',
     g: 'corps',
+    n: 5,
     fr: 'bouche, ouverture',
     strokes: 3,
     on: ['コウ'],
@@ -1118,11 +1592,15 @@ const KANJI = [
       { jp: '口[くち]を 大[おお]きく 開[あ]けて ください。', fr: 'Ouvrez grand la bouche.' },
       { jp: '出口[でぐち]は どこですか。', fr: 'Où est la sortie ?' },
     ],
-    notes: ['Trois traits seulement : le coin en haut à droite se fait d’un seul trait.', 'Dans 入口 et 出口, くち devient ぐち.'],
+    notes: [
+      'Trois traits seulement : le coin en haut à droite se fait d’un seul trait.',
+      'Dans 入口 et 出口, くち devient ぐち.',
+    ],
   },
   {
     k: '目',
     g: 'corps',
+    n: 5,
     fr: 'œil',
     strokes: 5,
     on: ['モク'],
@@ -1136,12 +1614,15 @@ const KANJI = [
       { jp: '目[め]が 大[おお]きいですね。', fr: 'Tu as de grands yeux.' },
       { jp: '二[ふた]つ目[め]の 駅[えき]で 降[お]ります。', fr: 'Je descends à la deuxième gare.' },
     ],
-    notes: ['Après un nombre, 目 veut dire « -ième » : 一つ目 (le premier), 三日目 (le troisième jour).'],
+    notes: [
+      'Après un nombre, 目 veut dire « -ième » : 一つ目 (le premier), 三日目 (le troisième jour).',
+    ],
     see: ['日'],
   },
   {
     k: '手',
     g: 'corps',
+    n: 5,
     fr: 'main',
     strokes: 4,
     on: ['シュ'],
@@ -1159,10 +1640,51 @@ const KANJI = [
     ],
   },
 
+  {
+    k: '耳',
+    g: 'corps',
+    n: 5,
+    fr: 'oreille',
+    strokes: 6,
+    on: ['ジ'],
+    kun: ['みみ'],
+    words: [
+      { w: '耳', r: 'みみ', fr: 'l’oreille', y: 'kun' },
+      { w: '右耳', r: 'みぎみみ', fr: 'l’oreille droite', y: 'kun' },
+    ],
+    phrases: [
+      { jp: '耳[みみ]が いたいです。', fr: 'J’ai mal à l’oreille.' },
+      { jp: 'うさぎの 耳[みみ]は 長[なが]いです。', fr: 'Les lapins ont de longues oreilles.' },
+    ],
+    notes: ['On le retrouve dans 聞く (écouter) : une oreille à la porte.'],
+    see: ['聞', '目'],
+  },
+  {
+    k: '足',
+    g: 'corps',
+    n: 5,
+    fr: 'pied, jambe ; suffire',
+    strokes: 7,
+    on: ['ソク'],
+    kun: ['あし', 'た.りる'],
+    words: [
+      { w: '足', r: 'あし', fr: 'le pied, la jambe', y: 'kun' },
+      { w: '足りる', r: 'たりる', fr: 'suffire', y: 'kun' },
+      { w: '一足', r: 'いっそく', fr: 'une paire (de chaussures)', y: 'on' },
+    ],
+    phrases: [
+      { jp: '足[あし]が いたいです。', fr: 'J’ai mal aux pieds.' },
+      { jp: 'お金[かね]が 足[た]りません。', fr: 'Je n’ai pas assez d’argent.' },
+    ],
+    notes: ['あし désigne le pied comme la jambe entière.'],
+    see: ['口'],
+  },
+
   // ------------------------------------------------------------ actions
   {
     k: '見',
     g: 'actions',
+    n: 5,
     fr: 'voir, regarder',
     strokes: 7,
     on: ['ケン'],
@@ -1183,6 +1705,7 @@ const KANJI = [
   {
     k: '行',
     g: 'actions',
+    n: 5,
     fr: 'aller',
     strokes: 6,
     on: ['コウ', 'ギョウ'],
@@ -1202,6 +1725,7 @@ const KANJI = [
   {
     k: '来',
     g: 'actions',
+    n: 5,
     fr: 'venir',
     strokes: 7,
     on: ['ライ'],
@@ -1214,7 +1738,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: '友[とも]だちが うちに 来[き]ます。', fr: 'Un ami vient chez moi.' },
-      { jp: '来年[らいねん]、日本[にほん]へ 行[い]きます。', fr: 'L’an prochain, je vais au Japon.' },
+      {
+        jp: '来年[らいねん]、日本[にほん]へ 行[い]きます。',
+        fr: 'L’an prochain, je vais au Japon.',
+      },
     ],
     notes: [
       'Le verbe change de lecture selon sa forme : 来る (くる), 来ます (きます), 来ない (こない).',
@@ -1225,6 +1752,7 @@ const KANJI = [
   {
     k: '食',
     g: 'actions',
+    n: 5,
     fr: 'manger',
     strokes: 9,
     on: ['ショク'],
@@ -1244,6 +1772,7 @@ const KANJI = [
   {
     k: '飲',
     g: 'actions',
+    n: 5,
     fr: 'boire',
     strokes: 12,
     on: ['イン'],
@@ -1257,12 +1786,16 @@ const KANJI = [
       { jp: 'お茶[ちゃ]を 飲[の]みます。', fr: 'Je bois du thé.' },
       { jp: '飲[の]み物[もの]は 何[なに]が いいですか。', fr: 'Qu’est-ce que tu veux boire ?' },
     ],
-    notes: ['La partie gauche est celle de 食 (manger), un peu resserrée.', 'On « boit » aussi un médicament : くすりを 飲む.'],
+    notes: [
+      'La partie gauche est celle de 食 (manger), un peu resserrée.',
+      'On « boit » aussi un médicament : くすりを 飲む.',
+    ],
     see: ['食'],
   },
   {
     k: '休',
     g: 'actions',
+    n: 5,
     fr: 'se reposer',
     strokes: 6,
     on: ['キュウ'],
@@ -1283,6 +1816,7 @@ const KANJI = [
   {
     k: '出',
     g: 'actions',
+    n: 5,
     fr: 'sortir',
     strokes: 5,
     on: ['シュツ'],
@@ -1303,6 +1837,7 @@ const KANJI = [
   {
     k: '入',
     g: 'actions',
+    n: 5,
     fr: 'entrer',
     strokes: 2,
     on: ['ニュウ'],
@@ -1317,14 +1852,167 @@ const KANJI = [
       { jp: 'へやに 入[はい]ります。', fr: 'J’entre dans la pièce.' },
       { jp: 'コーヒーに さとうを 入[い]れます。', fr: 'Je mets du sucre dans mon café.' },
     ],
-    notes: ['入 et 人 sont en miroir : dans 入, c’est le trait de droite qui domine.', 'はいる : entrer soi-même. いれる : faire entrer quelque chose.'],
+    notes: [
+      '入 et 人 sont en miroir : dans 入, c’est le trait de droite qui domine.',
+      'はいる : entrer soi-même. いれる : faire entrer quelque chose.',
+    ],
     see: ['人', '出', '八'],
+  },
+
+  {
+    k: '書',
+    g: 'actions',
+    n: 5,
+    fr: 'écrire',
+    strokes: 10,
+    on: ['ショ'],
+    kun: ['か.く'],
+    words: [
+      { w: '書く', r: 'かく', fr: 'écrire', y: 'kun' },
+      { w: '辞書', r: 'じしょ', fr: 'le dictionnaire', y: 'on' },
+      { w: '図書館', r: 'としょかん', fr: 'la bibliothèque', y: 'on' },
+    ],
+    phrases: [
+      { jp: '名前[なまえ]を 書[か]いて ください。', fr: 'Écrivez votre nom, s’il vous plaît.' },
+      { jp: '図書館[としょかん]で 本[ほん]を 読[よ]みます。', fr: 'Je lis à la bibliothèque.' },
+    ],
+    notes: ['Une main qui tient un pinceau au-dessus de 日.'],
+    see: ['読'],
+  },
+  {
+    k: '読',
+    g: 'actions',
+    n: 5,
+    fr: 'lire',
+    strokes: 14,
+    on: ['ドク'],
+    kun: ['よ.む'],
+    words: [
+      { w: '読む', r: 'よむ', fr: 'lire', y: 'kun' },
+      { w: '読書', r: 'どくしょ', fr: 'la lecture', y: 'on' },
+    ],
+    phrases: [
+      { jp: '日本語[にほんご]の 本[ほん]を 読[よ]みます。', fr: 'Je lis un livre en japonais.' },
+      { jp: '読書[どくしょ]が 好[す]きです。', fr: 'J’aime la lecture.' },
+    ],
+    notes: ['À gauche, 言 (la parole) : lire, c’était lire à voix haute.'],
+    see: ['書', '語', '話'],
+  },
+  {
+    k: '話',
+    g: 'actions',
+    n: 5,
+    fr: 'parler ; histoire',
+    strokes: 13,
+    on: ['ワ'],
+    kun: ['はな.す', 'はなし'],
+    words: [
+      { w: '話す', r: 'はなす', fr: 'parler', y: 'kun' },
+      { w: '話', r: 'はなし', fr: 'une histoire, une conversation', y: 'kun' },
+      { w: '電話', r: 'でんわ', fr: 'le téléphone', y: 'on' },
+      { w: '会話', r: 'かいわ', fr: 'la conversation', y: 'on' },
+    ],
+    phrases: [
+      { jp: '日本語[にほんご]を 少[すこ]し 話[はな]します。', fr: 'Je parle un peu japonais.' },
+      {
+        jp: '友[とも]だちと 電話[でんわ]で 話[はな]しました。',
+        fr: 'J’ai parlé au téléphone avec un ami.',
+      },
+    ],
+    notes: ['話 = 言 (la parole) + 舌 (la langue).'],
+    see: ['言', '語', '電'],
+  },
+  {
+    k: '聞',
+    g: 'actions',
+    n: 5,
+    fr: 'écouter, entendre ; demander',
+    strokes: 14,
+    on: ['ブン'],
+    kun: ['き.く'],
+    words: [
+      { w: '聞く', r: 'きく', fr: 'écouter ; demander', y: 'kun' },
+      { w: '新聞', r: 'しんぶん', fr: 'le journal', y: 'on' },
+    ],
+    phrases: [
+      { jp: '音楽[おんがく]を 聞[き]きます。', fr: 'J’écoute de la musique.' },
+      { jp: '先生[せんせい]に 聞[き]いて ください。', fr: 'Demandez au professeur.' },
+    ],
+    notes: [
+      '聞 = une oreille 耳 entre les battants d’une porte 門 : tendre l’oreille.',
+      '聞く veut dire écouter, mais aussi demander.',
+    ],
+    see: ['耳', '間'],
+  },
+  {
+    k: '言',
+    g: 'actions',
+    n: 5,
+    fr: 'dire ; parole',
+    strokes: 7,
+    on: ['ゲン', 'ゴン'],
+    kun: ['い.う', 'こと'],
+    words: [
+      { w: '言う', r: 'いう', fr: 'dire', y: 'kun' },
+      { w: '言葉', r: 'ことば', fr: 'un mot ; la langue', y: 'kun' },
+      { w: '一言', r: 'ひとこと', fr: 'un seul mot', y: 'kun' },
+    ],
+    phrases: [
+      { jp: 'もう 一度[いちど] 言[い]って ください。', fr: 'Pouvez-vous répéter ?' },
+      {
+        jp: '「ありがとう」は フランス語[ご]で 何[なん]と 言[い]いますか。',
+        fr: 'Comment dit-on « ありがとう » en français ?',
+      },
+    ],
+    notes: ['À gauche d’un kanji, 言 annonce un lien avec la parole : 語, 話, 読.'],
+    see: ['話', '語', '読'],
+  },
+  {
+    k: '買',
+    g: 'actions',
+    n: 5,
+    fr: 'acheter',
+    strokes: 12,
+    on: ['バイ'],
+    kun: ['か.う'],
+    words: [
+      { w: '買う', r: 'かう', fr: 'acheter', y: 'kun' },
+      { w: '買い物', r: 'かいもの', fr: 'les courses, le shopping', y: 'kun' },
+    ],
+    phrases: [
+      { jp: 'パンを 買[か]います。', fr: 'J’achète du pain.' },
+      {
+        jp: '午後[ごご]、買[か]い物[もの]に 行[い]きます。',
+        fr: 'Cet après-midi, je vais faire des courses.',
+      },
+    ],
+    notes: ['En bas, 貝 (un coquillage) : la monnaie d’autrefois.'],
+  },
+  {
+    k: '立',
+    g: 'actions',
+    n: 5,
+    fr: 'se lever, être debout',
+    strokes: 5,
+    on: ['リツ'],
+    kun: ['た.つ'],
+    words: [
+      { w: '立つ', r: 'たつ', fr: 'se lever, être debout', y: 'kun' },
+      { w: '国立', r: 'こくりつ', fr: 'national, public', y: 'on' },
+      { w: '私立', r: 'しりつ', fr: 'privé (école, université)', y: 'on' },
+    ],
+    phrases: [
+      { jp: '立[た]って ください。', fr: 'Levez-vous, s’il vous plaît.' },
+      { jp: '駅[えき]の 前[まえ]に 立[た]って います。', fr: 'Je suis debout devant la gare.' },
+    ],
+    notes: ['Une personne debout, les pieds posés sur le sol.'],
   },
 
   // -------------------------------------------------------------- ville
   {
     k: '学',
     g: 'ville',
+    n: 5,
     fr: 'étudier, savoir',
     strokes: 8,
     on: ['ガク'],
@@ -1336,15 +2024,22 @@ const KANJI = [
       { w: '学ぶ', r: 'まなぶ', fr: 'apprendre', y: 'kun' },
     ],
     phrases: [
-      { jp: '大学[だいがく]で 日本語[にほんご]を 学[まな]びます。', fr: 'J’apprends le japonais à l’université.' },
+      {
+        jp: '大学[だいがく]で 日本語[にほんご]を 学[まな]びます。',
+        fr: 'J’apprends le japonais à l’université.',
+      },
       { jp: '学校[がっこう]は 八時[はちじ]からです。', fr: 'L’école commence à 8 heures.' },
     ],
-    notes: ['学校 = がっこう : がく + こう se contractent.', 'En bas, on retrouve 子 (l’enfant) sous un toit.'],
+    notes: [
+      '学校 = がっこう : がく + こう se contractent.',
+      'En bas, on retrouve 子 (l’enfant) sous un toit.',
+    ],
     see: ['子', '校'],
   },
   {
     k: '校',
     g: 'ville',
+    n: 5,
     fr: 'école',
     strokes: 10,
     on: ['コウ'],
@@ -1355,8 +2050,14 @@ const KANJI = [
       { w: '小学校', r: 'しょうがっこう', fr: 'école primaire', y: 'on' },
     ],
     phrases: [
-      { jp: '高校[こうこう]で 英語[えいご]を 勉強[べんきょう]しました。', fr: 'J’ai étudié l’anglais au lycée.' },
-      { jp: '学校[がっこう]の 前[まえ]に 公園[こうえん]が あります。', fr: 'Il y a un parc devant l’école.' },
+      {
+        jp: '高校[こうこう]で 英語[えいご]を 勉強[べんきょう]しました。',
+        fr: 'J’ai étudié l’anglais au lycée.',
+      },
+      {
+        jp: '学校[がっこう]の 前[まえ]に 公園[こうえん]が あります。',
+        fr: 'Il y a un parc devant l’école.',
+      },
     ],
     notes: ['À gauche, 木 (arbre) : les écoles d’autrefois étaient en bois.'],
     see: ['学', '木'],
@@ -1364,6 +2065,7 @@ const KANJI = [
   {
     k: '本',
     g: 'ville',
+    n: 5,
     fr: 'livre ; origine',
     strokes: 5,
     on: ['ホン'],
@@ -1387,6 +2089,7 @@ const KANJI = [
   {
     k: '国',
     g: 'ville',
+    n: 5,
     fr: 'pays',
     strokes: 8,
     on: ['コク'],
@@ -1406,6 +2109,7 @@ const KANJI = [
   {
     k: '語',
     g: 'ville',
+    n: 5,
     fr: 'langue, mot',
     strokes: 14,
     on: ['ゴ'],
@@ -1420,11 +2124,15 @@ const KANJI = [
       { jp: '日本語[にほんご]は おもしろいです。', fr: 'Le japonais, c’est intéressant.' },
       { jp: 'フランス語[ご]を 話[はな]します。', fr: 'Je parle français.' },
     ],
-    notes: ['Pays + 語 = la langue de ce pays.', 'À gauche, 言 (la parole) : beaucoup de kanji liés au langage le portent.'],
+    notes: [
+      'Pays + 語 = la langue de ce pays.',
+      'À gauche, 言 (la parole) : beaucoup de kanji liés au langage le portent.',
+    ],
   },
   {
     k: '車',
     g: 'ville',
+    n: 5,
     fr: 'voiture, véhicule',
     strokes: 7,
     on: ['シャ'],
@@ -1443,6 +2151,7 @@ const KANJI = [
   {
     k: '電',
     g: 'ville',
+    n: 5,
     fr: 'électricité',
     strokes: 13,
     on: ['デン'],
@@ -1458,5 +2167,78 @@ const KANJI = [
     ],
     notes: ['En haut, 雨 (la pluie) : l’éclair vient de l’orage.'],
     see: ['雨'],
+  },
+  {
+    k: '社',
+    g: 'ville',
+    n: 5,
+    fr: 'entreprise ; sanctuaire',
+    strokes: 7,
+    on: ['シャ'],
+    kun: ['やしろ'],
+    words: [
+      { w: '会社', r: 'かいしゃ', fr: 'une entreprise', y: 'on' },
+      { w: '会社員', r: 'かいしゃいん', fr: 'un employé de bureau', y: 'on' },
+      { w: '社長', r: 'しゃちょう', fr: 'le patron, le PDG', y: 'on' },
+      { w: '神社', r: 'じんじゃ', fr: 'un sanctuaire shintō', y: 'on' },
+    ],
+    phrases: [
+      { jp: '父[ちち]は 会社員[かいしゃいん]です。', fr: 'Mon père est employé de bureau.' },
+      {
+        jp: '京都[きょうと]で 神社[じんじゃ]を 見[み]ました。',
+        fr: 'J’ai vu un sanctuaire à Kyoto.',
+      },
+    ],
+    notes: ['Dans 神社, しゃ devient じゃ.'],
+    see: ['土'],
+  },
+  {
+    k: '駅',
+    g: 'ville',
+    n: 5,
+    fr: 'gare',
+    strokes: 14,
+    on: ['エキ'],
+    kun: [],
+    words: [
+      { w: '駅', r: 'えき', fr: 'la gare, la station', y: 'on' },
+      { w: '駅員', r: 'えきいん', fr: 'un employé de gare', y: 'on' },
+      { w: '東京駅', r: 'とうきょうえき', fr: 'la gare de Tokyo', y: 'on' },
+    ],
+    phrases: [
+      { jp: '駅[えき]は どこですか。', fr: 'Où est la gare ?' },
+      {
+        jp: '東京駅[とうきょうえき]で 電車[でんしゃ]に 乗[の]ります。',
+        fr: 'Je prends le train à la gare de Tokyo.',
+      },
+    ],
+    notes: [
+      'À gauche, 馬 (le cheval) : les relais de poste d’autrefois, où l’on changeait de monture.',
+    ],
+  },
+  {
+    k: '道',
+    g: 'ville',
+    n: 5,
+    fr: 'chemin, voie',
+    strokes: 12,
+    on: ['ドウ'],
+    kun: ['みち'],
+    words: [
+      { w: '道', r: 'みち', fr: 'le chemin, la rue', y: 'kun' },
+      { w: '水道', r: 'すいどう', fr: 'l’eau courante', y: 'on' },
+      { w: '北海道', r: 'ほっかいどう', fr: 'Hokkaidō', y: 'on' },
+      { w: '柔道', r: 'じゅうどう', fr: 'le judo', y: 'on' },
+    ],
+    phrases: [
+      {
+        jp: 'この 道[みち]を まっすぐ 行[い]って ください。',
+        fr: 'Allez tout droit dans cette rue.',
+      },
+      { jp: '柔道[じゅうどう]を 習[なら]って います。', fr: 'J’apprends le judo.' },
+    ],
+    notes: [
+      'どう, c’est aussi « la voie » d’un art : 柔道 (judo), 書道 (calligraphie), 茶道 (cérémonie du thé).',
+    ],
   },
 ];
