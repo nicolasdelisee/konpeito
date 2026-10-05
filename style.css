@@ -11,6 +11,9 @@
   --accent: #ff4d88;
   --accent-deep: #e02c6c;
   --accent-soft: #ffe4ee;
+  /* Accent as text, and text sitting on an accent fill. */
+  --accent-ink: #e02c6c;
+  --on-accent: #fff;
   --candy-light: #ffc2d8;
   --ok: #17a06a;
   --ok-soft: #dcf7ea;
@@ -47,6 +50,7 @@
     --accent: #ff7fab;
     --accent-deep: #ff5f96;
     --accent-soft: #43263a;
+    --accent-ink: #ff7fab;
     --candy-light: #ffb3cd;
     --ok: #5ddba0;
     --ok-soft: #1d3b2e;
@@ -62,56 +66,60 @@
 }
 
 /* ------------------------------------------------------------ sakura skin
-   Same tokens, other palette: washi paper, blossom pink, spring sky and leaf
-   green. The night version is a yozakura — cherry trees under the lanterns. */
+   Same tokens, softer palette: cream paper, white cards, pastel blossom pink.
+   Fills are pale, so the text on them turns dark rose instead of white. */
 :root[data-skin="sakura"] {
-  --bg: #fbf5f1;
-  --bg-glow: #f9dce3;
-  --bg-glow-2: #e3edf5;
-  --surface: #fffdfb;
-  --surface-alt: #fcf0f1;
-  --border: #f0e0e1;
-  --border-strong: #e5c3ca;
-  --text: #4a383e;
-  --muted: #84707a;
-  --accent: #dc7491;
-  --accent-deep: #b24d6b;
-  --accent-soft: #fbe2e9;
-  --candy-light: #f8cad5;
-  --ok: #3c8a5c;
-  --ok-soft: #e1f1e5;
-  --ko: #c2453f;
-  --ko-soft: #fbe5e2;
-  --candy-mint: #86b893;
-  --candy-lemon: #ddb05a;
-  --candy-lilac: #a597d4;
-  --shadow-sm: 0 1px 2px rgba(150, 90, 105, 0.08);
-  --shadow: 0 2px 4px rgba(150, 90, 105, 0.06), 0 12px 28px -14px rgba(160, 90, 110, 0.32);
-  --shadow-lg: 0 4px 8px rgba(150, 90, 105, 0.08), 0 22px 44px -18px rgba(160, 90, 110, 0.4);
+  --bg: #fffaf5;
+  --bg-glow: #ffe8ee;
+  --bg-glow-2: #fff0dc;
+  --surface: #ffffff;
+  --surface-alt: #fff7f3;
+  --border: #f6e4e4;
+  --border-strong: #f0cdd6;
+  --text: #5b4249;
+  --muted: #8d727b;
+  --accent: #fbcbd8;
+  --accent-deep: #f5afc2;
+  --accent-soft: #fff0f4;
+  --accent-ink: #c0587a;
+  --on-accent: #7a3452;
+  --candy-light: #ffe3ea;
+  --ok: #4a9468;
+  --ok-soft: #e8f6ec;
+  --ko: #cc5656;
+  --ko-soft: #fdebea;
+  --candy-mint: #a6d6bd;
+  --candy-lemon: #f5d38c;
+  --candy-lilac: #cbbdf0;
+  --shadow-sm: 0 1px 2px rgba(200, 140, 155, 0.08);
+  --shadow: 0 2px 4px rgba(200, 140, 155, 0.06), 0 12px 28px -14px rgba(225, 150, 170, 0.35);
+  --shadow-lg: 0 4px 8px rgba(200, 140, 155, 0.08), 0 22px 44px -18px rgba(225, 150, 170, 0.42);
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-skin="sakura"] {
-    --bg: #1b1824;
-    --bg-glow: #3a2434;
-    --bg-glow-2: #1c293a;
-    --surface: #241f2e;
-    --surface-alt: #2c2638;
-    --border: #3b3347;
-    --border-strong: #54465f;
-    --text: #f5eaef;
-    --muted: #ab9caa;
-    --accent: #f29bb2;
-    --accent-deep: #e57896;
-    --accent-soft: #45293a;
-    --candy-light: #f7c3d0;
-    --ok: #7fd4a0;
-    --ok-soft: #1f3a2c;
-    --ko: #ff9a8f;
-    --ko-soft: #43262a;
-    --candy-mint: #86cfa0;
-    --candy-lemon: #f0c878;
-    --candy-lilac: #b9a8f0;
+    --bg: #221d26;
+    --bg-glow: #3d2a36;
+    --bg-glow-2: #2e2622;
+    --surface: #2a2430;
+    --surface-alt: #322a37;
+    --border: #41374a;
+    --border-strong: #5a4b60;
+    --text: #f8edf0;
+    --muted: #b5a5b0;
+    --accent: #f7bfcd;
+    --accent-deep: #eea5b9;
+    --accent-soft: #46303d;
+    --accent-ink: #f7bfcd;
+    --on-accent: #4a2234;
+    --candy-light: #fbd9e2;
+    --ok: #8fd8aa;
+    --ok-soft: #22392c;
+    --ko: #ffa69b;
+    --ko-soft: #44292c;
+    --candy-mint: #9fd8b6;
+    --candy-lemon: #f3d08b;
+    --candy-lilac: #c9b8f5;
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.75);
     --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 22px 44px -18px rgba(0, 0, 0, 0.85);
@@ -191,7 +199,7 @@ body {
 }
 
 .site-header .jp {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-family: var(--font-jp);
 }
 
@@ -290,7 +298,7 @@ body {
   margin-right: 7px;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent-deep);
+  color: var(--accent-ink);
   font-size: 0.66rem;
 }
 
@@ -325,7 +333,7 @@ body {
 }
 
 .mode-eg b {
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .howto {
@@ -378,7 +386,7 @@ button.secondary:active {
 .pill[aria-pressed="true"] {
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
   border-color: transparent;
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 6px 16px -6px var(--accent);
 }
 
@@ -407,7 +415,7 @@ button.secondary:active {
 }
 
 .preset:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
   border-color: var(--accent);
   border-style: solid;
   background: var(--accent-soft);
@@ -520,7 +528,7 @@ button.secondary:active {
 }
 
 .mode[aria-pressed="true"] strong {
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .mode-note {
@@ -551,7 +559,7 @@ button.primary {
   font: inherit;
   font-weight: 700;
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-  color: #fff;
+  color: var(--on-accent);
   border: none;
   border-radius: 999px;
   padding: 13px 30px;
@@ -576,7 +584,7 @@ button.secondary {
   font: inherit;
   font-weight: 700;
   background: var(--surface);
-  color: var(--accent);
+  color: var(--accent-ink);
   border: 1.5px solid var(--accent);
   border-radius: 999px;
   padding: 12px 24px;
@@ -602,7 +610,7 @@ button.secondary:hover {
 }
 
 .link-btn:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* -------------------------------------------------------------------- quiz */
@@ -983,7 +991,7 @@ button.secondary:hover {
 .chart-script {
   margin: 6px 0 2px;
   font-size: 0.9rem;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .chart-section + .chart-section {
@@ -1046,7 +1054,7 @@ button.cell {
   font-family: var(--font-ui);
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent-ink);
   background: var(--surface);
   border: 2px dashed var(--accent);
   cursor: pointer;
@@ -1086,7 +1094,7 @@ button.cell.is-active {
   margin: 10px 0 0;
   text-align: center;
   font-weight: 700;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 @media (max-width: 460px) {
@@ -1211,7 +1219,7 @@ button.cell.is-active {
 
 .pad-btn:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* ---------------------------------------------------------------- feedback */
@@ -1282,14 +1290,14 @@ button.cell.is-active {
 .legend-dot.is-learning {
   border-color: var(--candy-light);
   background: var(--accent-soft);
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .grain.is-strong,
 .legend-dot.is-strong {
   border-color: transparent;
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 4px 10px -4px var(--accent);
 }
 
@@ -1405,7 +1413,7 @@ button.cell.is-active {
 }
 
 .result-score strong {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 2.1rem;
   font-weight: 700;
 }
@@ -1442,7 +1450,7 @@ button.cell.is-active {
 }
 
 .skin-toggle:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
   border-color: var(--accent);
   transform: translateY(-1px);
 }
@@ -1542,12 +1550,12 @@ button.cell.is-active {
 }
 
 .tab:hover {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .tab[aria-current="page"] {
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 6px 16px -6px var(--accent);
 }
 
@@ -1617,12 +1625,12 @@ button.cell.is-active {
 .kj-tile.is-learned {
   border-color: transparent;
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-  color: #fff;
+  color: var(--on-accent);
   box-shadow: 0 4px 10px -4px var(--accent);
 }
 
 .kj-tile.is-learned .kj-tile-fr {
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 }
 
 .kj-summary .hero-summary {
@@ -1653,7 +1661,7 @@ button.cell.is-active {
 .kj-next-k {
   font-size: 2.6rem;
   line-height: 1;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .kj-next-text {
@@ -1701,7 +1709,7 @@ button.cell.is-active {
   margin: 0;
   font-size: 6.5rem;
   line-height: 1.1;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .kj-meaning {
@@ -1728,7 +1736,7 @@ button.cell.is-active {
 
 .kj-tag.is-on {
   background: var(--accent-soft);
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .kj-tag.is-kun {
@@ -1806,7 +1814,7 @@ button.cell.is-active {
 
 .kj-word-r {
   grid-area: r;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .kj-word .kj-tag {
@@ -1849,7 +1857,7 @@ button.kj-chip:hover {
 .kj-chip.is-learned {
   border-color: transparent;
   background: linear-gradient(135deg, var(--accent), var(--accent-deep));
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .kj-chip.is-missing {
@@ -1891,7 +1899,7 @@ button.kj-chip:hover {
 
 .kj-ruby rt {
   font-size: 0.5em;
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 /* Hidden, not removed: the line keeps its height, nothing jumps on reveal. */
@@ -1908,7 +1916,7 @@ button.kj-chip:hover {
 }
 
 .kj-target {
-  color: var(--accent-deep);
+  color: var(--accent-ink);
   font-weight: 700;
 }
 
@@ -1997,7 +2005,7 @@ button.kj-chip:hover {
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent-deep);
+  color: var(--accent-ink);
 }
 
 .kj-exam-badge.is-passed {
