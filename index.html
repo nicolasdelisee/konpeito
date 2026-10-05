@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Konpeitō — apprendre les hiragana &amp; katakana</title>
+    <meta
+      name="description"
+      content="Petit quiz pour apprendre les hiragana et les katakana, avec révision des kana ratés."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>"
+    />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="site-header">
+        <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Un konpeitō">
+          <defs>
+            <radialGradient id="candy" cx="38%" cy="32%" r="72%">
+              <stop offset="0%" stop-color="var(--candy-light)" />
+              <stop offset="100%" stop-color="var(--accent)" />
+            </radialGradient>
+          </defs>
+          <polygon
+            points="50.0,6.0 56.5,21.7 69.1,10.4 68.1,27.3 84.4,22.6 76.1,37.4 92.9,40.2 79.0,50.0 92.9,59.8 76.1,62.6 84.4,77.4 68.1,72.7 69.1,89.6 56.5,78.3 50.0,94.0 43.5,78.3 30.9,89.6 31.9,72.7 15.6,77.4 23.9,62.6 7.1,59.8 21.0,50.0 7.1,40.2 23.9,37.4 15.6,22.6 31.9,27.3 30.9,10.4 43.5,21.7"
+            fill="url(#candy)"
+            stroke="var(--accent)"
+            stroke-width="3"
+            stroke-linejoin="round"
+          />
+          <ellipse cx="38" cy="36" rx="8" ry="6" fill="#fff" opacity="0.5" transform="rotate(-25 38 36)" />
+        </svg>
+        <h1><span class="jp">こんぺいとう</span> <span class="latin">Konpeitō</span></h1>
+        <p class="tagline">Un grain de sucre à la fois.</p>
+      </header>
+
+      <!-- ============================================================ SETUP -->
+      <section id="screen-setup" class="screen">
+        <!-- Ce qui va se passer, en une phrase, et le bouton pour y aller.
+             Avant, « Commencer » était sous cinq cartes de réglages. -->
+        <div class="card hero">
+          <p class="hero-label">Ta prochaine session</p>
+          <p class="hero-summary" id="hero-summary"></p>
+          <button class="primary" id="start-btn" type="button">Commencer</button>
+          <p id="deck-info" class="muted"></p>
+        </div>
+
+        <p class="settings-intro">Réglages — gardés d’une fois sur l’autre.</p>
+
+        <div class="card">
+          <h2><span class="step">1</span> Syllabaires</h2>
+          <div class="pill-group" id="script-picker">
+            <button class="pill" data-script="hiragana" type="button">
+              <span class="pill-jp">あ</span> Hiragana
+            </button>
+            <button class="pill" data-script="katakana" type="button">
+              <span class="pill-jp">ア</span> Katakana
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="step">2</span> Ce que tu révises</h2>
+          <div class="presets" id="presets">
+            <button class="preset" type="button" data-preset="starter">
+              🌱 Les 46 de base
+            </button>
+            <button class="preset" type="button" data-preset="hiragana">あ Tout l’hiragana</button>
+            <button class="preset" type="button" data-preset="katakana">ア Tout le katakana</button>
+            <button class="preset" type="button" data-preset="all">🍬 Tout</button>
+          </div>
+          <p class="muted">Ou rangée par rangée&nbsp;:</p>
+          <div id="family-picker" class="families"></div>
+        </div>
+
+        <div class="card">
+          <h2><span class="step">3</span> Ce que tu fais</h2>
+          <div class="modes" id="mode-picker">
+            <p class="mode-group">Reconnaître</p>
+            <button class="mode" data-mode="kana-romaji" type="button">
+              <strong>Kana → romaji</strong>
+              <span>Tu vois le kana, tu choisis sa lecture parmi quatre.</span>
+              <code class="mode-eg"><em>か</em> → <b>ka</b> · ku · ke · ko</code>
+            </button>
+            <button class="mode" data-mode="romaji-kana" type="button">
+              <strong>Romaji → kana</strong>
+              <span>Tu vois la lecture, tu retrouves le kana. Plus dur, plus utile.</span>
+              <code class="mode-eg"><em>ka</em> → <b>か</b> · さ · た · な</code>
+            </button>
+            <button class="mode" data-mode="typing" type="button">
+              <strong>Saisie libre</strong>
+              <span>Tu vois le kana, tu tapes sa lecture au clavier. Sans propositions.</span>
+              <code class="mode-eg"><em>か</em> → tu tapes <b>ka</b></code>
+            </button>
+            <p class="mode-group">Écrire</p>
+            <button class="mode" data-mode="writing" type="button">
+              <strong>Écriture à main levée</strong>
+              <span>Tu vois la lecture, tu traces le kana à la souris ou au doigt.</span>
+              <code class="mode-eg"><em>ka</em> → tu traces <b>か</b> ✎</code>
+            </button>
+            <button class="mode" data-mode="chart" type="button">
+              <strong>Grille à compléter</strong>
+              <span>La grille complète des kana, quelques cases vidées à remplir au tracé.</span>
+              <code class="mode-eg">あ い う <b>[ e ]</b> お → tu traces <b>え</b> ✎</code>
+            </button>
+          </div>
+          <p class="mode-note" id="mode-note" hidden></p>
+        </div>
+
+        <div class="card">
+          <h2><span class="step">4</span> Longueur</h2>
+          <div class="pill-group" id="length-picker">
+            <button class="pill" data-length="10" type="button">10</button>
+            <button class="pill" data-length="20" type="button">20</button>
+            <button class="pill" data-length="50" type="button">50</button>
+            <button class="pill" data-length="0" type="button">Sans fin</button>
+          </div>
+        </div>
+
+        <div class="card weak-card" id="weak-card">
+          <h2>Ta progression</h2>
+          <p class="muted" id="mastery-caption">Un grain par kana : il se colore quand tu le maîtrises.</p>
+          <div class="mastery" id="mastery"></div>
+          <p class="mastery-legend">
+            <span class="legend-item"><span class="legend-dot"></span> jamais vu</span>
+            <span class="legend-item"><span class="legend-dot is-weak"></span> fragile</span>
+            <span class="legend-item"><span class="legend-dot is-learning"></span> en cours</span>
+            <span class="legend-item"><span class="legend-dot is-strong"></span> acquis</span>
+          </p>
+          <div id="weak-block" hidden>
+            <h3 class="weak-title">Les moins sûrs</h3>
+            <ul class="weak-list" id="weak-list"></ul>
+          </div>
+          <button class="link-btn" id="reset-stats" type="button">Effacer ma progression</button>
+        </div>
+      </section>
+
+      <!-- ============================================================= QUIZ -->
+      <section id="screen-quiz" class="screen" hidden>
+        <div class="quiz-top">
+          <button class="link-btn" id="quit-btn" type="button">← Réglages</button>
+          <div class="counters">
+            <span class="counter" title="Bonnes réponses"
+              >✓ <strong id="score-ok">0</strong></span
+            >
+            <span class="counter" title="Erreurs">✗ <strong id="score-ko">0</strong></span>
+            <span class="counter streak" id="streak-chip" title="Série en cours"
+              >🔥 <strong id="score-streak">0</strong></span
+            >
+          </div>
+        </div>
+        <div class="progress" id="progress"><div class="progress-fill" id="progress-fill"></div></div>
+
+        <p class="howto" id="quiz-howto"></p>
+
+        <div class="chart-panel" id="chart-panel" hidden>
+          <div class="chart-scroll" id="chart"></div>
+        </div>
+
+        <div class="card prompt-card" id="prompt-card">
+          <div class="burst" id="burst" aria-hidden="true"></div>
+          <p class="prompt-label" id="prompt-label">Quelle est la lecture&nbsp;?</p>
+          <p class="prompt" id="prompt"></p>
+          <p class="prompt-hint" id="prompt-hint"></p>
+        </div>
+
+        <div class="choices" id="choices"></div>
+
+        <form class="typing" id="typing-form" hidden autocomplete="off">
+          <input
+            id="typing-input"
+            type="text"
+            inputmode="latin"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="tape la lecture…"
+          />
+          <button class="primary" type="submit">Valider</button>
+        </form>
+
+        <!-- Colonne de droite en mode grille ; `display: contents` la rend
+             transparente dans les autres modes, où l'ordre reste inchangé. -->
+        <div class="chart-side">
+          <p class="chart-hint" id="chart-hint" hidden></p>
+
+          <div class="writing" id="writing-panel" hidden>
+            <div class="pad-row">
+              <div class="pad-wrap">
+                <canvas id="pad" width="280" height="280" aria-label="Zone de tracé"></canvas>
+                <p class="pad-placeholder" id="pad-placeholder">Trace le kana ici</p>
+              </div>
+              <figure class="pad-model" id="pad-model" hidden>
+                <span id="pad-model-kana"></span>
+                <figcaption>modèle</figcaption>
+              </figure>
+            </div>
+            <div class="pad-tools">
+              <button type="button" class="pad-btn" id="pad-undo">↶ Annuler</button>
+              <button type="button" class="pad-btn" id="pad-clear">Effacer</button>
+              <button type="button" class="primary" id="pad-check">Valider</button>
+            </div>
+          </div>
+
+          <p class="feedback" id="feedback"></p>
+          <p class="kbd-hint" id="kbd-hint"></p>
+        </div>
+
+      </section>
+
+      <!-- ============================================================== END -->
+      <section id="screen-end" class="screen" hidden>
+        <div class="card result-card">
+          <p class="result-emoji" id="result-emoji">🍡</p>
+          <h2 id="result-title">Session terminée</h2>
+          <p class="result-score"><strong id="result-pct">0</strong>% de bonnes réponses</p>
+          <p class="muted" id="result-detail"></p>
+        </div>
+
+        <div class="card" id="missed-card" hidden>
+          <h2>Les kana qui t'ont échappé</h2>
+          <ul class="weak-list" id="missed-list"></ul>
+        </div>
+
+        <div class="end-actions">
+          <button class="primary" id="again-btn" type="button">Rejouer</button>
+          <button class="secondary" id="review-btn" type="button" hidden>
+            Réviser mes erreurs
+          </button>
+          <button class="link-btn" id="back-btn" type="button">Réglages</button>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <p>Progression enregistrée dans ce navigateur uniquement.</p>
+      </footer>
+    </div>
+
+    <script src="kana.js"></script>
+    <script src="recognizer.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

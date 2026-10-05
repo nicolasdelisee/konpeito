@@ -1,0 +1,1403 @@
+:root {
+  --bg: #fff6f2;
+  --bg-glow: #ffdfe9;
+  --bg-glow-2: #e6f7f2;
+  --surface: #ffffff;
+  --surface-alt: #fff4f7;
+  --border: #f6e0e6;
+  --border-strong: #f0c9d6;
+  --text: #3d2b34;
+  --muted: #977f8b;
+  --accent: #ff4d88;
+  --accent-deep: #e02c6c;
+  --accent-soft: #ffe4ee;
+  --candy-light: #ffc2d8;
+  --ok: #17a06a;
+  --ok-soft: #dcf7ea;
+  --ko: #e04141;
+  --ko-soft: #ffe4e4;
+  /* Decorative only — the sugar grains and the family blocks */
+  --candy-mint: #3fc9ad;
+  --candy-lemon: #f3b23c;
+  --candy-lilac: #9b7bf0;
+  --shadow-sm: 0 1px 2px rgba(180, 100, 130, 0.08);
+  --shadow: 0 2px 4px rgba(180, 100, 130, 0.06), 0 12px 28px -14px rgba(190, 90, 130, 0.35);
+  --shadow-lg: 0 4px 8px rgba(180, 100, 130, 0.08), 0 22px 44px -18px rgba(190, 90, 130, 0.45);
+  --radius: 22px;
+  --radius-sm: 15px;
+  /* The handwriting templates are rendered from this exact stack, so the model
+     you compare yourself to is the shape you saw on screen. */
+  --font-jp: "Noto Sans CJK JP", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    "MS Gothic", sans-serif;
+  --font-ui: ui-rounded, "SF Pro Rounded", "Varela Round", "Quicksand", system-ui, -apple-system,
+    "Segoe UI Variable", "Segoe UI", Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a141f;
+    --bg-glow: #33203a;
+    --bg-glow-2: #17302f;
+    --surface: #251d2b;
+    --surface-alt: #2e2436;
+    --border: #3d3145;
+    --border-strong: #55415f;
+    --text: #f6ebf1;
+    --muted: #ab9bb0;
+    --accent: #ff7fab;
+    --accent-deep: #ff5f96;
+    --accent-soft: #43263a;
+    --candy-light: #ffb3cd;
+    --ok: #5ddba0;
+    --ok-soft: #1d3b2e;
+    --ko: #ff8f8f;
+    --ko-soft: #422329;
+    --candy-mint: #58dcc0;
+    --candy-lemon: #ffc964;
+    --candy-lilac: #b79bff;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.75);
+    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 22px 44px -18px rgba(0, 0, 0, 0.85);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* `display: grid/flex` on a section would otherwise beat the `hidden` attribute. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  /* Two soft halos, plus a fine dusting of sugar grains over everything. */
+  background-image: radial-gradient(circle at 12% -8%, var(--bg-glow), transparent 45%),
+    radial-gradient(circle at 92% 4%, var(--bg-glow-2), transparent 40%),
+    radial-gradient(circle at 50% 100%, var(--bg-glow), transparent 55%),
+    radial-gradient(circle at 1px 1px, rgba(190, 120, 150, 0.09) 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 22px 22px;
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 30px 18px 72px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ------------------------------------------------------------------ header */
+.site-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.logo {
+  width: 62px;
+  height: 62px;
+  display: block;
+  margin: 0 auto 6px;
+  filter: drop-shadow(0 6px 12px rgba(224, 44, 108, 0.28));
+  animation: candy-float 6s ease-in-out infinite;
+}
+
+@keyframes candy-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(4deg);
+  }
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.site-header .jp {
+  color: var(--accent);
+  font-family: var(--font-jp);
+}
+
+.site-header .latin {
+  font-weight: 500;
+  opacity: 0.55;
+  font-size: 0.85em;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+
+.site-footer {
+  margin-top: 44px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* ------------------------------------------------------------------- cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin: 0 0 10px;
+}
+
+/* -------------------------------------------------------------------- hero */
+
+/* What the next session will be, then the button. The point is that you can
+   start without reading anything below. */
+.hero {
+  text-align: center;
+  padding: 22px 20px 18px;
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-label {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.hero-summary {
+  margin: 6px 0 14px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.hero .muted {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+}
+
+.settings-intro {
+  margin: 22px 0 10px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 0.66rem;
+}
+
+.mode-group {
+  margin: 6px 0 0;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.mode-group:first-child {
+  margin-top: 0;
+}
+
+.mode-eg {
+  margin-top: 6px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-jp);
+  font-size: 0.8rem;
+  justify-self: start;
+}
+
+.mode-eg em {
+  font-style: normal;
+  color: var(--text);
+}
+
+.mode-eg b {
+  color: var(--accent-deep);
+}
+
+.howto {
+  margin: 0 0 14px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* ------------------------------------------------------- buttons & pills */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill,
+.preset,
+.pad-btn,
+.row-chip {
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.14s ease,
+    border-color 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.pill:active,
+.preset:active,
+.pad-btn:active,
+.row-chip:active,
+.choice:active:not(:disabled),
+button.primary:active,
+button.secondary:active {
+  transform: scale(0.96);
+}
+
+.pill {
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 17px;
+}
+
+.pill:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+.pill[aria-pressed="true"] {
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 16px -6px var(--accent);
+}
+
+.pill-jp {
+  font-family: var(--font-jp);
+  font-size: 1.05em;
+  margin-right: 3px;
+}
+
+/* ----------------------------------------------------------------- presets */
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.preset {
+  background: var(--surface-alt);
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 999px;
+  color: var(--muted);
+  padding: 7px 14px;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.preset:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  border-style: solid;
+  background: var(--accent-soft);
+}
+
+/* ---------------------------------------------------------------- families */
+.families {
+  display: grid;
+  gap: 12px;
+}
+
+.family {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--family-color, var(--accent));
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--surface-alt);
+}
+
+.family:nth-child(1) {
+  --family-color: var(--accent);
+}
+.family:nth-child(2) {
+  --family-color: var(--candy-mint);
+}
+.family:nth-child(3) {
+  --family-color: var(--candy-lilac);
+}
+
+.family-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.family-head strong {
+  font-size: 0.93rem;
+}
+
+.family-head span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.rows {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.row-chip {
+  font-family: var(--font-jp);
+  font-size: 0.95rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  border-radius: 12px;
+  padding: 5px 10px;
+  letter-spacing: 0.04em;
+}
+
+.row-chip:hover {
+  border-color: var(--family-color, var(--accent));
+  color: var(--text);
+}
+
+.row-chip[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--family-color, var(--accent));
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ------------------------------------------------------------------- modes */
+.modes {
+  display: grid;
+  gap: 8px;
+}
+
+.mode {
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 15px;
+  cursor: pointer;
+  display: grid;
+  gap: 2px;
+  transition: border-color 0.14s ease, background 0.14s ease, transform 0.14s ease;
+}
+
+.mode:hover {
+  border-color: var(--border-strong);
+  transform: translateX(2px);
+}
+
+.mode span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.mode[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mode[aria-pressed="true"] strong {
+  color: var(--accent-deep);
+}
+
+.mode-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.79rem;
+  line-height: 1.45;
+  padding: 9px 12px;
+  background: var(--surface-alt);
+  border-radius: 12px;
+}
+
+/* --------------------------------------------------------------- start bar */
+.start-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.start-bar .muted {
+  margin: 0;
+}
+
+button.primary {
+  font: inherit;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 30px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -8px var(--accent);
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease,
+    filter 0.14s ease;
+}
+
+button.primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -8px var(--accent);
+}
+
+button.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+button.secondary {
+  font: inherit;
+  font-weight: 700;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: transform 0.14s ease, background 0.14s ease;
+}
+
+button.secondary:hover {
+  background: var(--accent-soft);
+}
+
+.link-btn {
+  font: inherit;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px 2px;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+}
+
+.link-btn:hover {
+  color: var(--accent);
+}
+
+/* -------------------------------------------------------------------- quiz */
+.quiz-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.counters {
+  display: flex;
+  gap: 6px;
+}
+
+.counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 11px;
+  box-shadow: var(--shadow-sm);
+}
+
+.counter strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.counter.streak.is-hot {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  animation: pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--candy-light), var(--accent));
+  border-radius: 999px;
+  transition: width 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.prompt-card {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 28px 20px 24px;
+  box-shadow: var(--shadow-lg);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  animation: card-in 0.28s ease backwards;
+}
+
+/* Deliberately no opacity here: with a delayed, filled animation, an element
+   whose animation never starts would stay invisible. Motion only — the content
+   is readable at every instant. */
+@keyframes card-in {
+  from {
+    transform: translateY(10px) scale(0.99);
+  }
+}
+
+.prompt-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.prompt {
+  margin: 4px 0 0;
+  font-family: var(--font-jp);
+  font-size: 4.6rem;
+  line-height: 1.12;
+  font-weight: 500;
+}
+
+.prompt.romaji {
+  font-family: inherit;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.prompt-hint {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  min-height: 1.2em;
+}
+
+/* Reserving the line when there is no hint pushes the kana off-centre. */
+.prompt-hint:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+.prompt-card.is-ok {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.prompt-card.is-ko {
+  border-color: var(--ko);
+  background: var(--ko-soft);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+/* --------------------------------------------------------- sugar burst */
+.burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grain-pop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  opacity: 0;
+  animation: grain-fly 0.75s ease-out forwards;
+}
+
+@keyframes grain-fly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--to-x, 0), var(--to-y, 0)) scale(1) rotate(180deg);
+  }
+}
+
+.pop-0 {
+  --to-x: 90px;
+  --to-y: -70px;
+}
+.pop-1 {
+  --to-x: -95px;
+  --to-y: -55px;
+}
+.pop-2 {
+  --to-x: 120px;
+  --to-y: 30px;
+}
+.pop-3 {
+  --to-x: -120px;
+  --to-y: 45px;
+}
+.pop-4 {
+  --to-x: 30px;
+  --to-y: -100px;
+}
+.pop-5 {
+  --to-x: -40px;
+  --to-y: -95px;
+}
+.pop-6 {
+  --to-x: 65px;
+  --to-y: 85px;
+}
+.pop-7 {
+  --to-x: -70px;
+  --to-y: 80px;
+}
+
+/* ----------------------------------------------------------------- choices */
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.choice {
+  font: inherit;
+  font-family: var(--font-jp);
+  position: relative;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 20px 12px;
+  font-size: 1.55rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.14s ease,
+    background 0.14s ease, box-shadow 0.14s ease;
+  animation: card-in 0.24s ease backwards;
+}
+
+.choice:nth-child(2) {
+  animation-delay: 0.04s;
+}
+.choice:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.choice:nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.choice:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+
+.choice:disabled {
+  cursor: default;
+}
+
+.choice .num {
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  font-family: var(--font-ui);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface-alt);
+  border-radius: 6px;
+  padding: 1px 5px;
+}
+
+.choice.is-ok {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok);
+  animation: pop 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.choice.is-ko {
+  background: var(--ko-soft);
+  border-color: var(--ko);
+  color: var(--ko);
+}
+
+.choice.is-dim {
+  opacity: 0.4;
+}
+
+/* ------------------------------------------------------------------ typing */
+.typing {
+  display: flex;
+  gap: 10px;
+}
+
+.typing input {
+  font: inherit;
+  flex: 1;
+  min-width: 0;
+  padding: 15px 18px;
+  font-size: 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.typing input::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.typing input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* ------------------------------------------------------------------- chart */
+
+/* The gojūon is a wide object: in chart mode the page gives itself room, and
+   the pad sits beside the grid instead of below it — no scrolling back and
+   forth between the cell you clicked and the place you draw. */
+.app.is-wide {
+  max-width: 1120px;
+}
+
+/* The right-hand column is a plain wrapper everywhere else: `display: contents`
+   lets its children lay out exactly as if it did not exist. */
+.chart-side {
+  display: contents;
+}
+
+@media (min-width: 900px) {
+  .screen.is-chart {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    column-gap: 20px;
+    align-items: start;
+  }
+
+  .screen.is-chart > .quiz-top,
+  .screen.is-chart > .progress,
+  .screen.is-chart > .howto {
+    grid-column: 1 / -1;
+  }
+
+  .screen.is-chart > .chart-panel {
+    grid-column: 1;
+    margin-bottom: 0;
+  }
+
+  .screen.is-chart > .chart-side {
+    display: block;
+    grid-column: 2;
+    position: sticky;
+    top: 14px;
+  }
+
+  .screen.is-chart .feedback {
+    margin-top: 12px;
+  }
+}
+
+.chart-panel {
+  margin-bottom: 16px;
+}
+
+.chart-scroll {
+  /* The full gojūon is wider than a phone: it scrolls on its own, the page
+     itself never does. */
+  overflow-x: auto;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.chart-script {
+  margin: 6px 0 2px;
+  font-size: 0.9rem;
+  color: var(--accent-deep);
+}
+
+.chart-section + .chart-section {
+  margin-top: 14px;
+}
+
+.chart-caption {
+  margin: 0 0 6px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.chart-table {
+  border-collapse: separate;
+  border-spacing: 4px;
+}
+
+.chart-table th {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0 2px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: var(--font-jp);
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+/* Yōon are two characters (きゃ): they need a wider box, exactly as the
+   printed charts do. */
+.cell.is-wide {
+  width: auto;
+  min-width: 54px;
+  padding: 0 4px;
+  font-size: 1rem;
+}
+
+.cell.is-void {
+  border-color: transparent;
+  background: none;
+}
+
+button.cell {
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--surface);
+  border: 2px dashed var(--accent);
+  cursor: pointer;
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.14s ease;
+}
+
+button.cell:hover {
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+button.cell.is-active {
+  background: var(--accent-soft);
+  border-style: solid;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+.cell.is-ok {
+  border: 1.5px solid var(--ok);
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-family: var(--font-jp);
+  font-size: 1.25rem;
+  animation: pop 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cell.is-ko {
+  border: 1.5px solid var(--ko);
+  background: var(--ko-soft);
+  color: var(--ko);
+  font-family: var(--font-jp);
+  font-size: 1.25rem;
+}
+
+.chart-hint {
+  margin: 10px 0 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--accent-deep);
+}
+
+@media (max-width: 460px) {
+  .cell {
+    width: 34px;
+    height: 34px;
+    font-size: 1.05rem;
+  }
+
+  .cell.is-wide {
+    min-width: 48px;
+    font-size: 0.9rem;
+  }
+
+  button.cell {
+    font-size: 0.64rem;
+  }
+
+  .cell.is-ok,
+  .cell.is-ko {
+    font-size: 1.05rem;
+  }
+}
+
+/* ----------------------------------------------------------------- writing */
+.writing {
+  display: grid;
+  gap: 12px;
+}
+
+.pad-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pad-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+}
+
+/* In chart mode the grid is the question, so the pad gives it room: both have
+   to be on screen at once, phone included. */
+.writing.is-chart .pad-row {
+  flex-direction: column;
+  align-items: center;
+}
+
+.writing.is-chart .pad-model span {
+  font-size: 2.2rem;
+}
+
+#pad {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: crosshair;
+  /* Without this, dragging a finger scrolls the page instead of drawing. */
+  touch-action: none;
+}
+
+.pad-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.pad-model {
+  margin: 0;
+  text-align: center;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  background: var(--surface-alt);
+  animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pad-model span {
+  display: block;
+  font-family: var(--font-jp);
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.pad-model figcaption {
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pad-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pad-btn {
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 10px 18px;
+}
+
+.pad-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------------------------------------------------------------- feedback */
+.feedback {
+  min-height: 1.6em;
+  margin: 16px 0 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+
+.feedback.ok {
+  color: var(--ok);
+  animation: card-in 0.25s ease backwards;
+}
+
+.feedback.ko {
+  color: var(--ko);
+  animation: card-in 0.25s ease backwards;
+}
+
+.kbd-hint {
+  margin: 6px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.76rem;
+  min-height: 1.2em;
+}
+
+/* --------------------------------------------------------- progress map */
+.mastery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+/* Yōon are two characters (きゃ): the tile grows instead of stacking them. */
+.grain {
+  min-width: 30px;
+  padding: 0 5px;
+  white-space: nowrap;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-family: var(--font-jp);
+  font-size: 0.92rem;
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--muted);
+  transition: transform 0.14s ease;
+}
+
+.grain:hover {
+  transform: translateY(-2px) scale(1.08);
+}
+
+.grain.is-weak,
+.legend-dot.is-weak {
+  border-color: var(--ko);
+  background: var(--ko-soft);
+  color: var(--ko);
+}
+
+.grain.is-learning,
+.legend-dot.is-learning {
+  border-color: var(--candy-light);
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.grain.is-strong,
+.legend-dot.is-strong {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  box-shadow: 0 4px 10px -4px var(--accent);
+}
+
+.mastery-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.weak-title {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
+
+.weak-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.weak-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+
+.weak-kana {
+  font-family: var(--font-jp);
+  font-size: 1.5rem;
+  min-width: 2.2rem;
+  text-align: center;
+}
+
+.weak-romaji {
+  color: var(--muted);
+  min-width: 3.5rem;
+}
+
+.weak-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.weak-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--candy-light), var(--accent));
+  border-radius: 999px;
+}
+
+.weak-pct {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.4rem;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.weak-card .link-btn {
+  margin-top: 14px;
+}
+
+/* ------------------------------------------------------------------ result */
+.result-card {
+  text-align: center;
+  padding: 26px 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.result-emoji {
+  font-size: 2.8rem;
+  margin: 0;
+  animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.result-card h2 {
+  color: var(--text);
+  font-size: 1.25rem;
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 6px 0;
+}
+
+.result-score {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.result-score strong {
+  color: var(--accent);
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+.end-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* ------------------------------------------------------------- responsive */
+@media (max-width: 460px) {
+  .app {
+    padding: 22px 14px 56px;
+  }
+
+  .prompt {
+    font-size: 3.7rem;
+  }
+
+  .prompt.romaji {
+    font-size: 2.5rem;
+  }
+
+  .choice {
+    padding: 17px 10px;
+    font-size: 1.4rem;
+  }
+
+  .grain {
+    min-width: 27px;
+    height: 27px;
+  }
+
+  .start-bar {
+    justify-content: center;
+  }
+
+  .start-bar button.primary {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
