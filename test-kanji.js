@@ -110,7 +110,9 @@ check('ALL_WORDS sans doublon', new Set(ALL_WORDS.map((w) => w.w)).size === ALL_
 // ----------------------------------------------------------------- rendering
 console.log('Affichage :');
 const view = id('kanji-view');
-check('onglet kana affiché au départ', view.hidden === true && id('kana-view').hidden === false);
+check('les kanji sont la page d’accueil', view.hidden === false && id('kana-view').hidden === true);
+window.location.hash = '#kana';
+check('#kana ouvre les kana', view.hidden === true && id('kana-view').hidden === false);
 
 window.location.hash = '#kanji';
 check('onglet kanji ouvert', view.hidden === false && id('kana-view').hidden === true);

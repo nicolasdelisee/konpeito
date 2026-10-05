@@ -621,11 +621,12 @@ function renderExamBanner(card) {
 const kanjiEl = {};
 
 /**
- * `#kanji` → the list, `#kanji/水` → a card, `#kanji/examen/10` → an exam,
- * anything else → the kana tab.
+ * Kanji are the home page: no hash or `#kanji` → the list, `#kanji/水` → a
+ * card, `#kanji/examen/10` → an exam. `#kana` (or anything else) → the kana tab.
  */
 function currentRoute() {
   const hash = decodeURIComponent((window.location && window.location.hash) || '');
+  if (hash === '' || hash === '#') return { view: 'kanji', card: null };
   const match = /^#kanji(?:\/(.+))?$/.exec(hash);
   if (!match) return { view: 'kana' };
   const examMatch = /^examen\/(\d+)$/.exec(match[1] || '');
