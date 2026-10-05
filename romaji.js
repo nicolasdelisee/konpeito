@@ -4,7 +4,8 @@
  * Accepts both Hepburn and Kunrei spellings (shi / si, tsu / tu, ji / zi…),
  * doubled consonants for っ (kitte → きって) and `nn` or `n'` for ん. Anything
  * already in kana goes through untouched — katakana are folded to hiragana —
- * so a Japanese IME works too.
+ * so a Japanese IME works too. Full-width letters and curly apostrophes, as
+ * phones type them, are folded first.
  */
 const ROMAJI_TABLE = (() => {
   const table = {
@@ -42,6 +43,9 @@ const ROMAJI_TABLE = (() => {
     ju: 'じゅ',
     jo: 'じょ',
     je: 'じぇ',
+    jya: 'じゃ',
+    jyu: 'じゅ',
+    jyo: 'じょ',
     '-': 'ー',
   };
   const rows = {
@@ -77,9 +81,15 @@ const ROMAJI_TABLE = (() => {
 
 const VOWELS = 'aiueo';
 
-function toKana(input) {
+/**
+ * `nnGreedy`: read every `nn` as ん, even before a vowel (sennen → せんえん).
+ * By default it follows the IMEs: konnichiwa → こんにちわ.
+ */
+function toKana(input, { nnGreedy = false } = {}) {
   const text = String(input)
+    .normalize('NFKC')
     .toLowerCase()
+    .replace(/[\u2018\u2019`´]/g, "'")
     .replace(/\s+/g, '')
     // Katakana → hiragana: same layout, 0x60 code points apart.
     .replace(/[ァ-ヶ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
@@ -98,7 +108,8 @@ function toKana(input) {
       if (next === 'n') {
         const after = text[i + 2];
         out += 'ん';
-        i += after !== undefined && (VOWELS.includes(after) || after === 'y') ? 1 : 2;
+        const startsKana = after !== undefined && (VOWELS.includes(after) || after === 'y');
+        i += startsKana && !nnGreedy ? 1 : 2;
         continue;
       }
       if (next === undefined || (!VOWELS.includes(next) && next !== 'y')) {
@@ -117,6 +128,8 @@ function toKana(input) {
     if (match) {
       out += ROMAJI_TABLE[match];
       i += match.length;
+    } else if (ch === "'") {
+      i += 1; // a lone apostrophe only separates, it is not part of the answer
     } else {
       out += ch;
       i += 1;
@@ -125,8 +138,26 @@ function toKana(input) {
   return out;
 }
 
+/**
+ * Every way a typed answer can fairly be read: `nn` as ん or as ん + な-row
+ * (sennen, konnichiwa), and long vowels with a macron (ō = ou or oo).
+ */
+function readingsOf(typed) {
+  const macrons = { ā: 'aa', ī: 'ii', ū: 'uu', ē: 'ee' };
+  const spelled = String(typed)
+    .normalize('NFC')
+    .replace(/[āīūē]/g, (ch) => macrons[ch]);
+  const variants = new Set();
+  [spelled.replace(/ō/g, 'ou'), spelled.replace(/ō/g, 'oo')].forEach((text) => {
+    variants.add(toKana(text));
+    variants.add(toKana(text, { nnGreedy: true }));
+  });
+  return [...variants];
+}
+
 /** ぢ/じ and づ/ず sound the same: nobody should lose a point over them. */
 function sameReading(typed, expected) {
-  const fold = (text) => toKana(text).replace(/ぢ/g, 'じ').replace(/づ/g, 'ず');
-  return fold(typed) !== '' && fold(typed) === fold(expected);
+  const fold = (text) => text.replace(/ぢ/g, 'じ').replace(/づ/g, 'ず');
+  const target = fold(toKana(expected));
+  return target !== '' && readingsOf(typed).some((reading) => fold(reading) === target);
 }

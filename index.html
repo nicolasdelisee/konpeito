@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <title>Konpeitō — kanji et kana</title>
     <meta
       name="description"
@@ -31,7 +32,7 @@
     </div>
     <div class="app" id="app">
       <header class="site-header">
-        <button class="skin-toggle" id="skin-toggle" type="button"></button>
+        <button class="skin-toggle" id="skin-toggle" type="button">🌸 Sakura</button>
         <svg class="logo logo-sakura" viewBox="0 0 100 100" role="img" aria-label="Une fleur de cerisier">
           <defs>
             <radialGradient id="blossom" cx="50%" cy="50%" r="55%">
@@ -211,7 +212,7 @@
           <input
             id="typing-input"
             type="text"
-            inputmode="latin"
+            aria-label="Ta réponse"
             autocapitalize="off"
             autocorrect="off"
             spellcheck="false"
@@ -243,7 +244,7 @@
             </div>
           </div>
 
-          <p class="feedback" id="feedback"></p>
+          <p class="feedback" id="feedback" role="status"></p>
           <p class="kbd-hint" id="kbd-hint"></p>
         </div>
 

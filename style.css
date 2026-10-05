@@ -51,6 +51,8 @@
     --accent-deep: #ff5f96;
     --accent-soft: #43263a;
     --accent-ink: #ff7fab;
+    /* White on this light pink is under 3:1: dark text reads better. */
+    --on-accent: #3a0f22;
     --candy-light: #ffb3cd;
     --ok: #5ddba0;
     --ok-soft: #1d3b2e;
@@ -460,6 +462,11 @@ button.secondary:active {
 .family-head span {
   color: var(--muted);
   font-size: 0.78rem;
+  /* The kana sample must not break mid-syllable on a narrow phone. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .rows {
@@ -1056,7 +1063,7 @@ button.cell {
   font-weight: 700;
   color: var(--accent-ink);
   background: var(--surface);
-  border: 2px dashed var(--accent);
+  border: 2px dashed var(--accent-ink);
   cursor: pointer;
   transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.14s ease;
 }
@@ -1510,7 +1517,7 @@ button.cell.is-active {
 }
 
 .petal:nth-child(1) { --x: 6%; --t: 17s; --d: -2s; }
-.petal:nth-child(2) { --x: 18%; --t: 22s; --d: -11s; transform: scale(0.8); }
+.petal:nth-child(2) { --x: 18%; --t: 22s; --d: -11s; }
 .petal:nth-child(3) { --x: 31%; --t: 19s; --d: -6s; }
 .petal:nth-child(4) { --x: 44%; --t: 25s; --d: -17s; }
 .petal:nth-child(5) { --x: 57%; --t: 18s; --d: -9s; }

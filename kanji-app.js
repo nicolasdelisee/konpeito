@@ -156,7 +156,8 @@ function renderPhrase(jp, current, learned) {
         .map((ch) => (ch === current ? `<span class="kj-target">${ch}</span>` : escapeHtml(ch)))
         .join('');
       const hidden = rubyHidden(segment.base, learned) ? ' is-hidden' : '';
-      return `<ruby class="kj-ruby${hidden}">${base}<rt>${escapeHtml(segment.reading)}</rt></ruby>`;
+      const reveal = hidden ? ' tabindex="0" role="button" aria-label="Voir la lecture"' : '';
+      return `<ruby class="kj-ruby${hidden}"${reveal}>${base}<rt>${escapeHtml(segment.reading)}</rt></ruby>`;
     })
     .join('');
 }
@@ -184,7 +185,7 @@ function renderWord(word, current, learned) {
     : '';
   return `<li class="kj-word">
     <span class="kj-word-jp">${escapeHtml(word.w)}</span>
-    <span class="kj-word-r">${escapeHtml(word.r)}</span>
+    <span class="kj-word-r">${escapeHtml([word.r, ...(word.alt || [])].join(' / '))}</span>
     <span class="kj-word-fr">${escapeHtml(word.fr)}</span>
     <span class="kj-tag is-${word.y}" title="${escapeHtml(tag.hint)}">${tag.label}</span>
     ${chips || readable ? `<span class="kj-word-links">${chips}${readable}</span>` : ''}
@@ -282,11 +283,17 @@ function renderList() {
     ${groups}`;
 }
 
+/** Previous and next card, within the selected level when the card is in it. */
+function neighbours(card) {
+  const visible = visibleKanji();
+  const list = visible.includes(card) ? visible : KANJI;
+  const index = list.indexOf(card);
+  return [list[index - 1], list[index + 1]];
+}
+
 function renderCard(card) {
   const learned = learnedSet();
-  const index = KANJI.indexOf(card);
-  const prev = KANJI[index - 1];
-  const next = KANJI[index + 1];
+  const [prev, next] = neighbours(card);
   const group = KANJI_GROUPS.find((item) => item.id === card.g);
   const isLearned = learned.has(card.k);
 
@@ -397,6 +404,18 @@ function shuffled(list) {
   return copy;
 }
 
+/** The kanji an exam of this size covers, as a key: a score belongs to them. */
+function examSet(size) {
+  return kanjiStore.learned.slice(0, size).join('');
+}
+
+/** A saved score, unless the kanji it was earned on have changed since. */
+function examResult(size) {
+  const result = kanjiStore.exams[size];
+  if (!result || (result.set && result.set !== examSet(size))) return null;
+  return result;
+}
+
 function examSizes() {
   const sizes = [];
   for (let n = EXAM_STEP; n <= kanjiStore.learned.length; n += EXAM_STEP) sizes.push(n);
@@ -407,14 +426,15 @@ function examSizes() {
  * Three wrong answers: the `near` candidates first (same exam, shared kanji —
  * the ones you could actually mix up), then anything else.
  */
-function pickOptions(answer, near, far) {
+function pickOptions(answer, near, far, alsoClashes = () => false) {
   // « une femme » and « une femme (poli) » would both be right: keep only one.
   const core = (text) =>
     text
       .replace(/\(.*?\)/g, '')
       .trim()
       .toLowerCase();
-  const clashes = (a, b) => core(a).startsWith(core(b)) || core(b).startsWith(core(a));
+  const clashes = (a, b) =>
+    core(a).startsWith(core(b)) || core(b).startsWith(core(a)) || alsoClashes(a, b);
   const wrong = [];
   [...shuffled(near), ...shuffled(far)].forEach((option) => {
     if (wrong.length >= 3 || !option || clashes(option, answer)) return;
@@ -423,6 +443,22 @@ function pickOptions(answer, near, far) {
   });
   const options = shuffled([answer, ...wrong]);
   return { options, answer: options.indexOf(answer) };
+}
+
+/**
+ * Two kanji meanings sharing a real word (« ciel », « haut », « neuf »…) can't
+ * sit in the same multiple choice: both would look right.
+ */
+function meaningsOverlap(a, b) {
+  const words = (text) =>
+    new Set(
+      text
+        .toLowerCase()
+        .split(/[^a-zà-ÿœ]+/)
+        .filter((word) => word.length >= 4),
+    );
+  const left = words(a);
+  return [...words(b)].some((word) => left.has(word));
 }
 
 /**
@@ -448,6 +484,10 @@ function questionsFor(card, cards, known) {
       card.k,
       [...(card.see || []), ...others.map((other) => other.k)],
       KANJI.map((other) => other.k),
+      (a, b) =>
+        KANJI_BY_CHAR.has(a) &&
+        KANJI_BY_CHAR.has(b) &&
+        meaningsOverlap(KANJI_BY_CHAR.get(a).fr, KANJI_BY_CHAR.get(b).fr),
     ),
     explain: `${card.fr} = ${card.k}`,
     card,
@@ -480,6 +520,7 @@ function questionsFor(card, cards, known) {
       card.fr,
       others.map((other) => other.fr),
       KANJI.map((other) => other.fr),
+      meaningsOverlap,
     ),
     explain: `${card.k} = ${card.fr}`,
     card,
@@ -550,9 +591,11 @@ function questionsFor(card, cards, known) {
 }
 
 /**
- * Every kanji of the exam gets EXAM_PER_KANJI questions of different kinds,
- * one of them a reading to write whenever possible. Past EXAM_MAX_QUESTIONS,
- * the latest step is always in, the rest is drawn.
+ * Every kanji of the exam gets up to EXAM_PER_KANJI questions of different
+ * kinds, one of them a reading to write whenever possible. Questions are dealt
+ * round by round — one per kanji, then a second each… — so that past
+ * EXAM_MAX_QUESTIONS the cut drops second questions before dropping a kanji.
+ * The latest step always comes first.
  */
 function buildExam(size) {
   const cards = kanjiStore.learned.slice(0, size).map((k) => KANJI_BY_CHAR.get(k));
@@ -560,14 +603,17 @@ function buildExam(size) {
   const latest = cards.slice(-EXAM_STEP);
   const older = shuffled(cards.slice(0, -EXAM_STEP));
 
-  const slots = [];
-  [...latest, ...older].forEach((card) => {
+  const perKanji = [...latest, ...older].map((card) => {
     const kinds = questionsFor(card, cards, known);
     const picks = kinds.typed
       ? [kinds.typed, ...shuffled(kinds.filter((k) => k.kind !== 'Lecture'))]
       : shuffled(kinds);
-    picks.slice(0, EXAM_PER_KANJI).forEach(({ make }) => slots.push(make));
+    return picks.slice(0, EXAM_PER_KANJI);
   });
+  const slots = [];
+  for (let round = 0; round < EXAM_PER_KANJI; round += 1) {
+    perKanji.forEach((picks) => picks[round] && slots.push(picks[round].make));
+  }
   const questions = slots.slice(0, EXAM_MAX_QUESTIONS).map((make) => make());
 
   return {
@@ -607,9 +653,13 @@ function nextExamQuestion() {
   if (exam.index < exam.questions.length) return;
   exam.done = true;
   const pct = Math.round((exam.score / exam.questions.length) * 100);
-  const previous = kanjiStore.exams[exam.size];
+  const previous = examResult(exam.size);
   if (!previous || pct > previous.best) {
-    kanjiStore.exams[exam.size] = { best: pct, date: new Date().toISOString().slice(0, 10) };
+    kanjiStore.exams[exam.size] = {
+      best: pct,
+      date: new Date().toISOString().slice(0, 10),
+      set: examSet(exam.size),
+    };
     saveKanjiStore();
   }
 }
@@ -668,8 +718,8 @@ function renderExam() {
   const typedNote =
     answered && question.typed && !correct ? ` · tu as écrit ${toKana(exam.chosen)}` : '';
   const feedback = answered
-    ? `<p class="feedback ${correct ? 'ok' : 'ko'}">${correct ? '✓ ' : '✗ '}${escapeHtml(question.explain + typedNote)}</p>
-       <div class="end-actions"><button type="button" class="primary kj-exam-next">${exam.index + 1 < total ? 'Suivant' : 'Voir le résultat'}</button></div>`
+    ? `<p class="feedback ${correct ? 'ok' : 'ko'}" role="status">${correct ? '✓ ' : '✗ '}${escapeHtml(question.explain + typedNote)}</p>
+       <div class="end-actions"><button type="button" class="primary kj-exam-next" id="kj-exam-next">${exam.index + 1 < total ? 'Suivant' : 'Voir le résultat'}</button></div>`
     : '';
 
   return `<div class="kj-nav">
@@ -690,13 +740,13 @@ function renderExam() {
 function renderTyping(answered) {
   const value = answered ? escapeHtml(exam.chosen) : '';
   return `<form class="typing kj-typing" id="kj-typing" autocomplete="off">
-      <input id="kj-answer" class="kj-answer" name="answer" type="text" value="${value}"
+      <input id="kj-answer" class="kj-answer" name="answer" type="text" value="${value}" aria-label="Lecture du mot"
         autocapitalize="off" autocorrect="off" spellcheck="false" lang="ja"
         placeholder="en romaji ou en kana…"${answered ? ' disabled' : ''} />
       ${answered ? '' : '<button class="primary" type="submit">Valider</button>'}
     </form>
     <p class="kj-preview" id="kj-preview">${answered ? escapeHtml(toKana(exam.chosen)) : ''}</p>
-    ${answered ? '' : '<p class="muted kj-typing-hint">suichuu → すいちゅう · ん : nn ou n’ · っ : double la consonne (gakkou)</p>'}`;
+    ${answered ? '' : '<p class="muted kj-typing-hint">suichuu → すいちゅう · っ : double la consonne (gakkou) · ん devant une voyelle : n’ (kin’youbi)</p>'}`;
 }
 
 /** The exams block of the list: what is open, and how far the next one is. */
@@ -711,7 +761,7 @@ function renderExamsBlock() {
       : '';
   const buttons = sizes
     .map((size) => {
-      const result = kanjiStore.exams[size];
+      const result = examResult(size);
       const badge = result
         ? `<span class="kj-exam-badge${result.best >= EXAM_PASS * 100 ? ' is-passed' : ''}">${result.best} %</span>`
         : '<span class="kj-exam-badge">à passer</span>';
@@ -723,7 +773,7 @@ function renderExamsBlock() {
     .join('');
   return `<div class="card">
       <h2>Examens</h2>
-      <p class="muted">Un examen tous les ${EXAM_STEP} kanji appris, qui reprend tous ceux d’avant : sens, lectures, mots et phrases.</p>
+      <p class="muted">Un examen tous les ${EXAM_STEP} kanji appris, qui reprend ceux d’avant : sens, lectures à écrire, mots et phrases. Jusqu’à ${EXAM_MAX_QUESTIONS} questions, les derniers appris en priorité.</p>
       ${buttons ? `<div class="kj-exam-list">${buttons}</div>` : ''}
       ${upcoming}
     </div>`;
@@ -733,7 +783,7 @@ function renderExamsBlock() {
 function renderExamBanner(card) {
   const count = kanjiStore.learned.length;
   const isLatest = kanjiStore.learned[count - 1] === card.k;
-  if (!count || count % EXAM_STEP || !isLatest || kanjiStore.exams[count]) return '';
+  if (!count || count % EXAM_STEP || !isLatest || examResult(count)) return '';
   return `<div class="card kj-exam-banner">
       <p><strong>🎉 ${count} kanji appris !</strong> L’examen sur les ${count} est prêt.</p>
       <button type="button" class="primary kj-exam-start" data-n="${count}">Passer l’examen</button>
@@ -748,8 +798,18 @@ const kanjiEl = {};
  * Kanji are the home page: no hash or `#kanji` → the list, `#kanji/水` → a
  * card, `#kanji/examen/10` → an exam. `#kana` (or anything else) → the kana tab.
  */
+/** The hash, decoded — a mangled one (#kanji/%E0) stays as typed. */
+function currentHash() {
+  const raw = (window.location && window.location.hash) || '';
+  try {
+    return decodeURIComponent(raw);
+  } catch (error) {
+    return raw;
+  }
+}
+
 function currentRoute() {
-  const hash = decodeURIComponent((window.location && window.location.hash) || '');
+  const hash = currentHash();
   if (hash === '' || hash === '#') return { view: 'kanji', card: null };
   const match = /^#kanji(?:\/(.+))?$/.exec(hash);
   if (!match) return { view: 'kana' };
@@ -761,9 +821,13 @@ function currentRoute() {
   return { view: 'kanji', card: card || null };
 }
 
+let lastView = null;
+
 function renderRoute() {
   const route = currentRoute();
   const isKanji = route.view === 'kanji';
+  if (lastView && lastView !== route.view) window.scrollTo({ top: 0 });
+  lastView = route.view;
   kanjiEl.kanaView.hidden = isKanji;
   kanjiEl.kanjiView.hidden = !isKanji;
   kanjiEl.tabKana.setAttribute('aria-current', isKanji ? 'false' : 'page');
@@ -775,15 +839,19 @@ function renderRoute() {
     // Re-rendering (furigana, a revealed reading…) must not restart the exam.
     if (!exam || exam.size !== route.exam) exam = buildExam(route.exam);
     kanjiEl.kanjiView.innerHTML = renderExam();
+    // Keep the keyboard where the next action is: the answer box, or « Suivant ».
     const input = document.getElementById('kj-answer');
-    if (input && !input.disabled && input.focus) input.focus();
+    const nextBtn = document.getElementById('kj-exam-next');
+    if (exam.chosen === null && input && !input.disabled && input.focus) input.focus();
+    else if (exam.chosen !== null && nextBtn && nextBtn.focus) nextBtn.focus();
     return;
   }
   kanjiEl.kanjiView.innerHTML = route.card ? renderCard(route.card) : renderList();
 }
 
 function goTo(hash) {
-  if (window.location.hash === hash) renderRoute();
+  // Browsers report #kanji/水 as #kanji/%E6%B0%B4: compare decoded.
+  if (currentHash() === hash) renderRoute();
   else window.location.hash = hash;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -844,6 +912,15 @@ function onKanjiClick(event) {
 
 function onKanjiKey(event) {
   if (kanjiEl.kanjiView.hidden) return;
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  const inField = event.target && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName || '');
+  const ruby =
+    !exam && event.target && event.target.classList && event.target.classList.contains('kj-ruby');
+  if (ruby && (event.key === 'Enter' || event.key === ' ')) {
+    if (event.preventDefault) event.preventDefault();
+    onKanjiClick({ target: event.target });
+    return;
+  }
   if (exam && !exam.done) {
     const index = Number(event.key) - 1;
     const typing = exam.questions[exam.index].typed;
@@ -859,9 +936,9 @@ function onKanjiKey(event) {
     return;
   }
   const { card } = currentRoute();
-  if (!card) return;
-  const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
-  const target = step && KANJI[KANJI.indexOf(card) + step];
+  if (!card || inField) return;
+  const [prev, next] = neighbours(card);
+  const target = { ArrowLeft: prev, ArrowRight: next }[event.key];
   if (target) goTo(`#kanji/${target.k}`);
 }
 

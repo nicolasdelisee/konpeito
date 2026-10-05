@@ -1138,6 +1138,9 @@ function showScreen(name) {
 
 function onKeyDown(event) {
   if (el.quiz.hidden || !session) return;
+  // The kanji tab hides the whole kana view, quiz included: its keys are not ours.
+  if (document.getElementById('kana-view').hidden) return;
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
 
   if (session.awaitingNext && (event.key === 'Enter' || event.key === ' ')) {
     event.preventDefault();
