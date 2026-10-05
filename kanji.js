@@ -174,7 +174,7 @@ const KANJI = [
     fr: 'sept',
     strokes: 2,
     on: ['シチ'],
-    kun: ['なな', 'なな.つ'],
+    kun: ['なな', 'なな.つ', 'なの'],
     words: [
       { w: '七つ', r: 'ななつ', fr: 'sept (objets)', y: 'kun' },
       { w: '七月', r: 'しちがつ', fr: 'juillet', y: 'on' },
@@ -194,12 +194,12 @@ const KANJI = [
     fr: 'huit',
     strokes: 2,
     on: ['ハチ'],
-    kun: ['や.っつ'],
+    kun: ['や', 'や.っつ', 'よう'],
     words: [
       { w: '八つ', r: 'やっつ', fr: 'huit (objets)', y: 'kun' },
       { w: '八月', r: 'はちがつ', fr: 'août', y: 'on' },
       { w: '八時', r: 'はちじ', fr: 'huit heures', y: 'on' },
-      { w: '八日', r: 'ようか', fr: 'le 8 du mois, huit jours', y: 'sp' },
+      { w: '八日', r: 'ようか', fr: 'le 8 du mois, huit jours', y: 'kun' },
     ],
     phrases: [
       { jp: '八時[はちじ]に 学校[がっこう]へ 行[い]きます。', fr: 'Je vais à l’école à 8 heures.' },
@@ -234,7 +234,7 @@ const KANJI = [
     n: 5,
     fr: 'dix',
     strokes: 2,
-    on: ['ジュウ'],
+    on: ['ジュウ', 'ジッ', 'ジュッ'],
     kun: ['とお'],
     words: [
       { w: '十', r: 'とお', fr: 'dix (objets)', y: 'kun' },
@@ -360,7 +360,7 @@ const KANJI = [
     ],
     notes: [
       'あの日 se lit あのひ, pas « anonichi ».',
-      'Dans les dates, 日 se lit か : 三日 (みっか), 十日 (とおか).',
+      'Dans les dates, 日 se lit souvent か : 三日 (みっか), 十日 (とおか). Mais le 1er se dit ついたち, et le 11 じゅういちにち.',
       '今日 (きょう) se lit d’un bloc.',
     ],
     see: ['月', '目'],
@@ -402,7 +402,7 @@ const KANJI = [
       { w: '火', r: 'ひ', fr: 'le feu', y: 'kun' },
       { w: '火曜日', r: 'かようび', fr: 'mardi', y: 'on' },
       { w: '花火', r: 'はなび', fr: 'feu d’artifice', y: 'kun' },
-      { w: '火山', r: 'かざん', fr: 'volcan', y: 'on' },
+      { w: '火山', r: 'かざん', fr: 'un volcan', y: 'on' },
     ],
     phrases: [
       { jp: '火曜日[かようび]に 会[あ]いましょう。', fr: 'Retrouvons-nous mardi.' },
@@ -465,7 +465,7 @@ const KANJI = [
       { w: 'お金', r: 'おかね', fr: 'l’argent', y: 'kun' },
       { w: '金曜日', r: 'きんようび', fr: 'vendredi', y: 'on' },
       { w: '金', r: 'きん', fr: 'l’or', y: 'on' },
-      { w: '金魚', r: 'きんぎょ', fr: 'poisson rouge', y: 'on' },
+      { w: '金魚', r: 'きんぎょ', fr: 'un poisson rouge', y: 'on' },
     ],
     phrases: [
       { jp: 'お金[かね]が ありません。', fr: 'Je n’ai pas d’argent.' },
@@ -539,7 +539,10 @@ const KANJI = [
     ],
     phrases: [
       { jp: '今[いま]、何時[なんじ]ですか。', fr: 'Quelle heure est-il ?' },
-      { jp: '今日[きょう]は いい 天気[てんき]です。', fr: 'Il fait beau aujourd’hui.' },
+      {
+        jp: '今日[きょう]は 何曜日[なんようび]ですか。',
+        fr: 'Quel jour sommes-nous aujourd’hui ?',
+      },
     ],
     notes: ['今日 (きょう) et 今年 (ことし) se lisent d’un bloc. こんばんは, c’est 今晩 + は.'],
   },
@@ -552,7 +555,7 @@ const KANJI = [
     on: ['カ'],
     kun: ['なに', 'なん'],
     words: [
-      { w: '何', r: 'なに / なん', fr: 'quoi', y: 'kun' },
+      { w: '何', r: 'なに', alt: ['なん'], fr: 'quoi', y: 'kun' },
       { w: '何時', r: 'なんじ', fr: 'quelle heure', y: 'kun' },
       { w: '何人', r: 'なんにん', fr: 'combien de personnes', y: 'kun' },
       { w: '何曜日', r: 'なんようび', fr: 'quel jour (de la semaine)', y: 'kun' },
@@ -712,7 +715,7 @@ const KANJI = [
       { jp: '午後[ごご]、公園[こうえん]へ 行[い]きます。', fr: 'Cet après-midi, je vais au parc.' },
     ],
     notes: [
-      'Le même kanji donne あと (« après ») et うしろ (« derrière ») : c’est l’okurigana qui tranche.',
+      'Le même kanji donne あと (« après ») et うしろ (« derrière ») : avec ろ derrière, c’est うしろ.',
     ],
     see: ['前'],
   },
@@ -763,7 +766,7 @@ const KANJI = [
       },
     ],
     notes: [
-      '間 = 日 (le soleil) qui passe entre les battants d’une porte (門).',
+      'Moyen mnémotechnique : le soleil 日 aperçu entre les battants d’une porte 門.',
       '三時 = trois heures (le moment) ; 三時間 = trois heures (la durée).',
     ],
     see: ['時'],
@@ -817,7 +820,7 @@ const KANJI = [
         fr: 'Un garçon joue au parc.',
       },
     ],
-    notes: ['椅子 s’écrit presque toujours いす, en kana.'],
+    notes: ['椅子 s’écrit aussi très souvent いす, en kana.'],
   },
   {
     k: '女',
@@ -894,7 +897,7 @@ const KANJI = [
     ],
     phrases: [
       { jp: '母[はは]は 日本人[にほんじん]です。', fr: 'Ma mère est japonaise.' },
-      { jp: 'お母[かあ]さん、ただいま!', fr: 'Maman, je suis rentré !' },
+      { jp: 'お母[かあ]さん、ただいま！', fr: 'Maman, je suis rentré !' },
     ],
     notes: ['Même logique que 父 : はは pour la sienne, お母さん pour celle des autres.'],
     see: ['父', '毎'],
@@ -962,7 +965,7 @@ const KANJI = [
       { jp: 'パリで 生[う]まれました。', fr: 'Je suis né à Paris.' },
     ],
     notes: [
-      'L’un des kanji aux lectures les plus nombreuses : apprends-les par les mots, pas en liste.',
+      'Un kanji aux lectures très nombreuses (une douzaine en tout) : apprends-les par les mots, pas en liste.',
     ],
   },
   {
@@ -1039,7 +1042,7 @@ const KANJI = [
     n: 5,
     fr: 'milieu, dedans',
     strokes: 4,
-    on: ['チュウ'],
+    on: ['チュウ', 'ジュウ'],
     kun: ['なか'],
     words: [
       { w: '中', r: 'なか', fr: 'l’intérieur, dedans', y: 'kun' },
@@ -1059,10 +1062,10 @@ const KANJI = [
     k: '上',
     g: 'places',
     n: 5,
-    fr: 'dessus, haut',
+    fr: 'dessus, au-dessus',
     strokes: 3,
     on: ['ジョウ'],
-    kun: ['うえ', 'あ.がる', 'のぼ.る'],
+    kun: ['うえ', 'あ.がる', 'あ.げる', 'のぼ.る'],
     words: [
       { w: '上', r: 'うえ', fr: 'dessus, en haut', y: 'kun' },
       { w: '上手', r: 'じょうず', fr: 'doué, habile', y: 'on' },
@@ -1082,7 +1085,7 @@ const KANJI = [
     fr: 'dessous, bas',
     strokes: 3,
     on: ['カ', 'ゲ'],
-    kun: ['した', 'さ.がる', 'くだ.さい'],
+    kun: ['した', 'さ.がる', 'さ.げる', 'くだ.さる', 'お.りる'],
     words: [
       { w: '下', r: 'した', fr: 'dessous, en bas', y: 'kun' },
       { w: '地下鉄', r: 'ちかてつ', fr: 'le métro', y: 'on' },
@@ -1115,7 +1118,7 @@ const KANJI = [
     ],
     notes: [
       '右 se trace en commençant par ノ, puis 一 ; 左 fait l’inverse.',
-      'En bas : 口 pour 右 (la main qui porte à la bouche), 工 pour 左.',
+      'Pour les distinguer : 口 en bas pour 右, 工 pour 左.',
     ],
     see: ['左'],
   },
@@ -1178,7 +1181,7 @@ const KANJI = [
       { jp: '日[ひ]は 東[ひがし]から 出[で]ます。', fr: 'Le soleil se lève à l’est.' },
     ],
     notes: [
-      '東 = le soleil 日 derrière un arbre 木 : là où il se lève.',
+      'Moyen mnémotechnique : le soleil 日 qui se lève derrière un arbre 木.',
       '東京 = « la capitale de l’est ».',
     ],
     see: ['西', '日', '木'],
@@ -1222,7 +1225,7 @@ const KANJI = [
       },
       {
         jp: '沖縄[おきなわ]は 日本[にほん]の 南[みなみ]に あります。',
-        fr: 'Okinawa est au sud du Japon.',
+        fr: 'Okinawa est dans le sud du Japon.',
       },
     ],
     see: ['北'],
@@ -1249,7 +1252,7 @@ const KANJI = [
       },
     ],
     notes: [
-      'Deux personnes assises dos à dos : on tourne le dos au nord froid.',
+      'À l’origine, deux personnes assises dos à dos.',
       'Les gares ont souvent quatre sorties : 東口, 西口, 南口, 北口.',
     ],
     see: ['南'],
@@ -1276,7 +1279,7 @@ const KANJI = [
       },
     ],
     notes: [
-      '古 = 十 + 口 : ce qui est passé par dix bouches, une vieille histoire.',
+      'Moyen mnémotechnique : 十 + 口, une histoire passée par dix bouches.',
       '古い se dit des choses, pas des gens.',
     ],
     see: ['新'],
@@ -1285,7 +1288,7 @@ const KANJI = [
     k: '新',
     g: 'qualites',
     n: 5,
-    fr: 'nouveau, neuf',
+    fr: 'nouveau, récent',
     strokes: 13,
     on: ['シン'],
     kun: ['あたら.しい'],
@@ -1330,7 +1333,7 @@ const KANJI = [
     k: '高',
     g: 'qualites',
     n: 5,
-    fr: 'haut ; cher',
+    fr: 'haut, élevé ; cher',
     strokes: 10,
     on: ['コウ'],
     kun: ['たか.い'],
@@ -1389,7 +1392,7 @@ const KANJI = [
       { jp: 'この 本[ほん]は 面白[おもしろ]いです。', fr: 'Ce livre est intéressant.' },
     ],
     notes: [
-      '面白い (おもしろい) se lit d’un bloc : « le visage qui s’éclaire ».',
+      '面白い (おもしろい) se lit d’un bloc.',
       '白 = 日 avec un petit trait en plus : ne pas les confondre.',
     ],
     see: ['日', '百'],
@@ -1444,13 +1447,13 @@ const KANJI = [
     k: '天',
     g: 'nature',
     n: 5,
-    fr: 'ciel',
+    fr: 'ciel (céleste), paradis',
     strokes: 4,
     on: ['テン'],
     kun: ['あめ', 'あま'],
     words: [
       { w: '天気', r: 'てんき', fr: 'la météo, le temps qu’il fait', y: 'on' },
-      { w: '天ぷら', r: 'てんぷら', fr: 'tempura', y: 'on' },
+      { w: '天ぷら', r: 'てんぷら', fr: 'tempura', y: 'sp' },
       { w: '天国', r: 'てんごく', fr: 'le paradis', y: 'on' },
     ],
     phrases: [
@@ -1469,7 +1472,7 @@ const KANJI = [
     on: ['キ', 'ケ'],
     kun: [],
     words: [
-      { w: '天気', r: 'てんき', fr: 'la météo', y: 'on' },
+      { w: '天気', r: 'てんき', fr: 'la météo, le temps qu’il fait', y: 'on' },
       { w: '元気', r: 'げんき', fr: 'en forme', y: 'on' },
       { w: '人気', r: 'にんき', fr: 'populaire, la popularité', y: 'on' },
       { w: '気持ち', r: 'きもち', fr: 'un sentiment, une sensation', y: 'on' },
@@ -1632,7 +1635,7 @@ const KANJI = [
       { w: '手', r: 'て', fr: 'la main', y: 'kun' },
       { w: '手紙', r: 'てがみ', fr: 'une lettre', y: 'kun' },
       { w: '上手', r: 'じょうず', fr: 'doué, habile', y: 'sp' },
-      { w: '下手', r: 'へた', fr: 'maladroit', y: 'sp' },
+      { w: '下手', r: 'へた', fr: 'maladroit, pas doué', y: 'sp' },
       { w: '歌手', r: 'かしゅ', fr: 'un chanteur', y: 'on' },
     ],
     phrases: [
@@ -1738,7 +1741,10 @@ const KANJI = [
       { w: '来年', r: 'らいねん', fr: 'l’an prochain', y: 'on' },
     ],
     phrases: [
-      { jp: '友[とも]だちが うちに 来[き]ます。', fr: 'Un ami vient chez moi.' },
+      {
+        jp: '先生[せんせい]は 何時[なんじ]に 来[き]ますか。',
+        fr: 'À quelle heure vient le professeur ?',
+      },
       {
         jp: '来年[らいねん]、日本[にほん]へ 行[い]きます。',
         fr: 'L’an prochain, je vais au Japon.',
@@ -1877,7 +1883,9 @@ const KANJI = [
       { jp: '名前[なまえ]を 書[か]いて ください。', fr: 'Écrivez votre nom, s’il vous plaît.' },
       { jp: '図書館[としょかん]で 本[ほん]を 読[よ]みます。', fr: 'Je lis à la bibliothèque.' },
     ],
-    notes: ['Une main qui tient un pinceau au-dessus de 日.'],
+    notes: [
+      'En haut, 聿 : une main qui tient un pinceau. En bas, 曰 (« dire »), un peu plus large que 日.',
+    ],
     see: ['読'],
   },
   {
@@ -1920,7 +1928,7 @@ const KANJI = [
         fr: 'J’ai parlé au téléphone avec un ami.',
       },
     ],
-    notes: ['話 = 言 (la parole) + 舌 (la langue).'],
+    notes: ['À gauche, 言 : la parole. Moyen mnémotechnique pour la droite : 舌, la langue.'],
     see: ['言', '語', '電'],
   },
   {
@@ -2009,6 +2017,31 @@ const KANJI = [
     notes: ['Une personne debout, les pieds posés sur le sol.'],
   },
 
+  {
+    k: '会',
+    g: 'actions',
+    n: 5,
+    fr: 'rencontrer ; réunion',
+    strokes: 6,
+    on: ['カイ', 'エ'],
+    kun: ['あ.う'],
+    words: [
+      { w: '会う', r: 'あう', fr: 'rencontrer, voir quelqu’un', y: 'kun' },
+      { w: '会社', r: 'かいしゃ', fr: 'une entreprise', y: 'on' },
+      { w: '会話', r: 'かいわ', fr: 'la conversation', y: 'on' },
+      { w: '会議', r: 'かいぎ', fr: 'une réunion', y: 'on' },
+    ],
+    phrases: [
+      { jp: '駅[えき]で 友[とも]だちに 会[あ]います。', fr: 'Je retrouve un ami à la gare.' },
+      { jp: '会社[かいしゃ]は 九時[くじ]からです。', fr: 'Le travail commence à 9 heures.' },
+    ],
+    notes: [
+      'On « rencontre » quelqu’un avec に : 友だちに 会う.',
+      'Un 会社員 (かいしゃいん) est un employé de bureau.',
+    ],
+    see: ['社', '話'],
+  },
+
   // -------------------------------------------------------------- ville
   {
     k: '学',
@@ -2047,7 +2080,7 @@ const KANJI = [
     kun: [],
     words: [
       { w: '学校', r: 'がっこう', fr: 'école', y: 'on' },
-      { w: '高校', r: 'こうこう', fr: 'lycée', y: 'on' },
+      { w: '高校', r: 'こうこう', fr: 'le lycée', y: 'on' },
       { w: '小学校', r: 'しょうがっこう', fr: 'école primaire', y: 'on' },
     ],
     phrases: [
@@ -2060,7 +2093,7 @@ const KANJI = [
         fr: 'Il y a un parc devant l’école.',
       },
     ],
-    notes: ['À gauche, 木 (arbre) : les écoles d’autrefois étaient en bois.'],
+    notes: ['À gauche, 木 (l’arbre) ; à droite, 交, qui donne le son コウ.'],
     see: ['学', '木'],
   },
   {
@@ -2098,7 +2131,7 @@ const KANJI = [
     words: [
       { w: '国', r: 'くに', fr: 'un pays', y: 'kun' },
       { w: '中国', r: 'ちゅうごく', fr: 'la Chine', y: 'on' },
-      { w: '外国', r: 'がいこく', fr: 'l’étranger', y: 'on' },
+      { w: '外国', r: 'がいこく', fr: 'l’étranger, un pays étranger', y: 'on' },
       { w: '韓国', r: 'かんこく', fr: 'la Corée du Sud', y: 'on' },
     ],
     phrases: [
