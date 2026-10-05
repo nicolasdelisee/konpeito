@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Konpeitō — apprendre les hiragana &amp; katakana</title>
+    <title>Konpeitō — kana et kanji</title>
     <meta
       name="description"
-      content="Petit quiz pour apprendre les hiragana et les katakana, avec révision des kana ratés."
+      content="Quiz de hiragana et de katakana, et fiches de kanji avec lectures, mots et phrases d’exemple."
     />
     <link rel="stylesheet" href="style.css" />
     <link
@@ -35,7 +35,13 @@
         </svg>
         <h1><span class="jp">こんぺいとう</span> <span class="latin">Konpeitō</span></h1>
         <p class="tagline">Un grain de sucre à la fois.</p>
+        <nav class="tabs" aria-label="Sections">
+          <a class="tab" id="tab-kana" href="#kana"><span class="tab-jp">あ</span> Kana</a>
+          <a class="tab" id="tab-kanji" href="#kanji"><span class="tab-jp">漢</span> Kanji</a>
+        </nav>
       </header>
+
+      <div id="kana-view">
 
       <!-- ============================================================ SETUP -->
       <section id="screen-setup" class="screen">
@@ -233,6 +239,11 @@
           <button class="link-btn" id="back-btn" type="button">Réglages</button>
         </div>
       </section>
+      </div>
+
+      <!-- ============================================================ KANJI -->
+      <!-- Rendered entirely by kanji-app.js, from the data in kanji.js. -->
+      <section id="kanji-view" class="screen" hidden></section>
 
       <footer class="site-footer">
         <p>Progression enregistrée dans ce navigateur uniquement.</p>
@@ -242,5 +253,7 @@
     <script src="kana.js"></script>
     <script src="recognizer.js"></script>
     <script src="app.js"></script>
+    <script src="kanji.js"></script>
+    <script src="kanji-app.js"></script>
   </body>
 </html>

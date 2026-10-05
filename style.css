@@ -1360,6 +1360,451 @@ button.cell.is-active {
   margin-top: 20px;
 }
 
+/* -------------------------------------------------------------------- tabs */
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 14px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.tab {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 7px 18px;
+  border-radius: 999px;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.tab:hover {
+  color: var(--accent);
+}
+
+.tab[aria-current="page"] {
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  box-shadow: 0 6px 16px -6px var(--accent);
+}
+
+.tab-jp {
+  font-family: var(--font-jp);
+  margin-right: 2px;
+}
+
+/* The chart mode widens the page; the kanji tab keeps the reading width. */
+.view-kanji .app.is-wide {
+  max-width: 680px;
+}
+
+/* ------------------------------------------------------------------ kanji */
+.jp,
+.kj-glyph,
+.kj-tile-k,
+.kj-next-k,
+.kj-word-jp,
+.kj-word-r,
+.kj-reading-list,
+.kj-phrase-jp,
+.kj-chip,
+.kj-notes {
+  font-family: var(--font-jp), var(--font-ui);
+}
+
+.kj-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+}
+
+.kj-tile {
+  font: inherit;
+  cursor: pointer;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 10px 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  transition: transform 0.14s ease, border-color 0.14s ease;
+}
+
+.kj-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.kj-tile-k {
+  font-size: 1.9rem;
+  line-height: 1.1;
+}
+
+.kj-tile-fr {
+  font-size: 0.7rem;
+  color: var(--muted);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kj-tile.is-learned {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+  box-shadow: 0 4px 10px -4px var(--accent);
+}
+
+.kj-tile.is-learned .kj-tile-fr {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.kj-summary .hero-summary {
+  margin-top: 0;
+}
+
+.kj-next {
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 16px;
+  text-align: left;
+  color: var(--text);
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm);
+  transition: transform 0.14s ease;
+}
+
+.kj-next:hover {
+  transform: translateY(-2px);
+}
+
+.kj-next-k {
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--accent-deep);
+}
+
+.kj-next-text {
+  display: grid;
+  gap: 2px;
+  font-size: 0.85rem;
+}
+
+.kj-next-text span {
+  color: var(--muted);
+}
+
+.kj-furi-picker {
+  display: grid;
+  gap: 8px;
+}
+
+.kj-furi-picker .muted {
+  margin: 0;
+}
+
+.kj-furi-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---- one card */
+.kj-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.kj-arrows {
+  display: flex;
+  gap: 6px;
+}
+
+.kj-hero .kj-glyph {
+  margin: 0;
+  font-size: 6.5rem;
+  line-height: 1.1;
+  color: var(--accent-deep);
+}
+
+.kj-meaning {
+  margin: 4px 0 2px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.kj-hero .muted {
+  margin: 0 0 14px;
+}
+
+.kj-tag {
+  display: inline-block;
+  min-width: 42px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  font-family: var(--font-ui);
+}
+
+.kj-tag.is-on {
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.kj-tag.is-kun {
+  background: color-mix(in srgb, var(--candy-mint) 20%, transparent);
+  color: color-mix(in srgb, var(--candy-mint) 60%, var(--text));
+}
+
+.kj-tag.is-sp {
+  background: color-mix(in srgb, var(--candy-lemon) 22%, transparent);
+  color: color-mix(in srgb, var(--candy-lemon) 55%, var(--text));
+}
+
+.kj-reading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 6px 0;
+}
+
+.kj-reading + .kj-reading {
+  border-top: 1px solid var(--border);
+}
+
+.kj-reading-list {
+  font-size: 1.35rem;
+}
+
+.kj-reading-hint {
+  grid-column: 2;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.kj-okuri {
+  color: var(--muted);
+}
+
+.kj-okuri::before {
+  content: "·";
+  margin: 0 1px;
+}
+
+.kj-sep {
+  color: var(--muted);
+}
+
+.kj-words {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.kj-word {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "jp r tag"
+    "fr fr fr"
+    "links links links";
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 10px 0;
+}
+
+.kj-word + .kj-word {
+  border-top: 1px solid var(--border);
+}
+
+.kj-word-jp {
+  grid-area: jp;
+  font-size: 1.45rem;
+}
+
+.kj-word-r {
+  grid-area: r;
+  color: var(--accent-deep);
+}
+
+.kj-word .kj-tag {
+  grid-area: tag;
+}
+
+.kj-word-fr {
+  grid-area: fr;
+  font-size: 0.88rem;
+}
+
+.kj-word-links {
+  grid-area: links;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.kj-chip {
+  font-size: 1rem;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface-alt);
+  color: var(--text);
+  cursor: pointer;
+}
+
+button.kj-chip:hover {
+  border-color: var(--accent);
+}
+
+.kj-chip.is-learned {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: #fff;
+}
+
+.kj-chip.is-missing {
+  border-style: dashed;
+  color: var(--muted);
+  cursor: default;
+}
+
+.kj-readable {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ok);
+}
+
+.kj-phrase {
+  padding: 4px 0 12px;
+}
+
+.kj-phrase + .kj-phrase {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.kj-phrase-jp {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 2.2;
+}
+
+.kj-phrase-fr {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.kj-ruby {
+  ruby-position: over;
+}
+
+.kj-ruby rt {
+  font-size: 0.5em;
+  color: var(--accent-deep);
+}
+
+/* Hidden, not removed: the line keeps its height, nothing jumps on reveal. */
+.kj-ruby.is-hidden {
+  cursor: pointer;
+}
+
+.kj-ruby.is-hidden rt {
+  visibility: hidden;
+}
+
+.kj-ruby.is-hidden.is-revealed rt {
+  visibility: visible;
+}
+
+.kj-target {
+  color: var(--accent-deep);
+  font-weight: 700;
+}
+
+.kj-phrase + .kj-furi-picker {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.kj-notes {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+}
+
+.kj-elsewhere {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.kj-elsewhere-btn {
+  font: inherit;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 8px 12px;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+}
+
+.kj-elsewhere-btn:hover {
+  border-color: var(--accent);
+}
+
+.kj-elsewhere-btn .jp {
+  font-size: 1.15rem;
+}
+
+.kj-see {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 /* ------------------------------------------------------------- responsive */
 @media (max-width: 460px) {
   .app {

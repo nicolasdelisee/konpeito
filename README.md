@@ -1,6 +1,7 @@
 # こんぺいとう · Konpeitō
 
-Petit quiz pour apprendre les hiragana et les katakana. Aucun build, aucune
+Petit quiz pour apprendre les hiragana et les katakana, et fiches pour réviser
+les kanji. Aucun build, aucune
 dépendance : des fichiers statiques et c'est tout.
 
 Le 金平糖 est un petit bonbon de sucre à facettes, qu'on grignote grain par
@@ -43,6 +44,27 @@ questions · hiragana, les 46 de base · tu choisis la bonne lecture » — et l
 bouton pour la lancer. Les réglages viennent après, numérotés, chacun avec un
 exemple concret de ce qu'il change. Pendant le quiz, une ligne rappelle en
 permanence ce qu'on attend de toi.
+
+## Kanji
+
+Un second onglet, `#kanji`, propose une fiche par kanji — 72 kanji du quotidien
+pour commencer, rangés par thème (nombres, jours, temps, gens…). Chaque fiche
+donne le sens, le nombre de traits, les lectures ON et KUN, quelques mots
+courants et deux phrases simples, plus les pièges à connaître (あの日 se lit
+あのひ, 大人 se lit おとな…).
+
+Tu marques les kanji que tu as appris, et tout le reste s'en déduit :
+
+- **Furigana automatiques** : la lecture ne s'affiche que sur les kanji que tu
+  n'as pas encore appris. Un mot dont tu connais tous les kanji reste nu — touche-le
+  pour vérifier. Les modes « toujours » et « jamais » existent aussi.
+- **Liens entre fiches** : chaque mot montre ses autres kanji, cliquables, et
+  chaque fiche liste les mots d'autres fiches où le kanji revient.
+- **Prochain kanji conseillé** : celui qui te rend lisibles le plus de nouveaux
+  mots avec ce que tu sais déjà.
+
+Les données sont dans `kanji.js`, écrites à la main ; `test-kanji.js` vérifie
+que chaque kanji d'une phrase porte bien sa lecture.
 
 ## Grille à compléter
 
@@ -128,6 +150,9 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 | `kana.js`            | Le jeu de données — une ligne par rangée, hiragana + katakana   |
 | `recognizer.js`      | Reconnaissance d'écriture : amincissement, nuages, comparaison |
 | `app.js`             | Tirage pondéré, modes de quiz, score, persistance             |
+| `kanji.js`           | Les fiches de kanji : lectures, mots, phrases, pièges          |
+| `kanji-app.js`       | L’onglet kanji : liste, fiche, furigana, liens entre fiches    |
+| `test-kanji.js`      | Vérifie les données kanji et l’affichage des fiches            |
 | `test.js`            | Tests des quiz au clavier (faux DOM)                          |
 | `test-recognizer.js` | Mesure de la reconnaissance + mode écriture bout en bout       |
 | `test-dom.js`        | Faux DOM partagé par les deux suites                          |
@@ -143,6 +168,7 @@ si l'app change un jour de charpente.
 node test.js              # parcours des quiz, invariants du QCM
 node test-recognizer.js   # reconnaissance ; nécessite python3 + Pillow
 node test-recognizer.js 2 # version rapide (2 tracés simulés par kana)
+node test-kanji.js        # données et fiches kanji
 ```
 
 `test.js` simule un DOM minimal, joue de vraies sessions et vérifie les
