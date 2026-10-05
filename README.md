@@ -153,7 +153,8 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 | Fichier              | Rôle                                                          |
 | -------------------- | ------------------------------------------------------------- |
 | `index.html`         | Structure des trois écrans (réglages, quiz, résultats)         |
-| `style.css`          | Thème clair/sombre automatique                                |
+| `style.css`          | Deux thèmes (Konpeitō, Sakura), clair/sombre automatique       |
+| `theme.js`           | Bouton de bascule entre les thèmes, mémorisé                   |
 | `kana.js`            | Le jeu de données — une ligne par rangée, hiragana + katakana   |
 | `recognizer.js`      | Reconnaissance d'écriture : amincissement, nuages, comparaison |
 | `app.js`             | Tirage pondéré, modes de quiz, score, persistance             |

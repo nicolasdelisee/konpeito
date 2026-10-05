@@ -61,6 +61,63 @@
   }
 }
 
+/* ------------------------------------------------------------ sakura skin
+   Same tokens, other palette: washi paper, blossom pink, spring sky and leaf
+   green. The night version is a yozakura — cherry trees under the lanterns. */
+:root[data-skin="sakura"] {
+  --bg: #fbf5f1;
+  --bg-glow: #f9dce3;
+  --bg-glow-2: #e3edf5;
+  --surface: #fffdfb;
+  --surface-alt: #fcf0f1;
+  --border: #f0e0e1;
+  --border-strong: #e5c3ca;
+  --text: #4a383e;
+  --muted: #84707a;
+  --accent: #dc7491;
+  --accent-deep: #b24d6b;
+  --accent-soft: #fbe2e9;
+  --candy-light: #f8cad5;
+  --ok: #3c8a5c;
+  --ok-soft: #e1f1e5;
+  --ko: #c2453f;
+  --ko-soft: #fbe5e2;
+  --candy-mint: #86b893;
+  --candy-lemon: #ddb05a;
+  --candy-lilac: #a597d4;
+  --shadow-sm: 0 1px 2px rgba(150, 90, 105, 0.08);
+  --shadow: 0 2px 4px rgba(150, 90, 105, 0.06), 0 12px 28px -14px rgba(160, 90, 110, 0.32);
+  --shadow-lg: 0 4px 8px rgba(150, 90, 105, 0.08), 0 22px 44px -18px rgba(160, 90, 110, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="sakura"] {
+    --bg: #1b1824;
+    --bg-glow: #3a2434;
+    --bg-glow-2: #1c293a;
+    --surface: #241f2e;
+    --surface-alt: #2c2638;
+    --border: #3b3347;
+    --border-strong: #54465f;
+    --text: #f5eaef;
+    --muted: #ab9caa;
+    --accent: #f29bb2;
+    --accent-deep: #e57896;
+    --accent-soft: #45293a;
+    --candy-light: #f7c3d0;
+    --ok: #7fd4a0;
+    --ok-soft: #1f3a2c;
+    --ko: #ff9a8f;
+    --ko-soft: #43262a;
+    --candy-mint: #86cfa0;
+    --candy-lemon: #f0c878;
+    --candy-lilac: #b9a8f0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.75);
+    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 22px 44px -18px rgba(0, 0, 0, 0.85);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -88,6 +145,8 @@ body {
 }
 
 .app {
+  position: relative;
+  z-index: 1;
   max-width: 680px;
   margin: 0 auto;
   padding: 30px 18px 72px;
@@ -110,7 +169,7 @@ body {
   height: 62px;
   display: block;
   margin: 0 auto 6px;
-  filter: drop-shadow(0 6px 12px rgba(224, 44, 108, 0.28));
+  filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--accent-deep) 30%, transparent));
   animation: candy-float 6s ease-in-out infinite;
 }
 
@@ -1358,6 +1417,106 @@ button.cell.is-active {
   gap: 12px;
   flex-wrap: wrap;
   margin-top: 20px;
+}
+
+/* -------------------------------------------------------------- skin toggle */
+.site-header {
+  position: relative;
+}
+
+.skin-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  box-shadow: var(--shadow-sm);
+  transition: color 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+}
+
+.skin-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* One logo per skin: the candy, or a blossom. */
+.logo-sakura,
+[data-skin="sakura"] .logo-candy {
+  display: none;
+}
+
+[data-skin="sakura"] .logo-sakura {
+  display: block;
+}
+
+/* ------------------------------------------------------------ falling petals */
+.petals {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+[data-skin="sakura"] .petals {
+  display: block;
+}
+
+.petal {
+  position: absolute;
+  top: -24px;
+  left: var(--x);
+  width: 11px;
+  height: 13px;
+  border-radius: 150% 0 150% 0;
+  background: linear-gradient(135deg, var(--candy-light), var(--accent));
+  opacity: 0.55;
+  animation: petal-fall var(--t) linear var(--d) infinite;
+}
+
+@keyframes petal-fall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(28px, 25vh) rotate(90deg);
+  }
+  50% {
+    transform: translate(-12px, 50vh) rotate(200deg);
+  }
+  75% {
+    transform: translate(34px, 75vh) rotate(290deg);
+  }
+  100% {
+    transform: translate(4px, 104vh) rotate(380deg);
+  }
+}
+
+.petal:nth-child(1) { --x: 6%; --t: 17s; --d: -2s; }
+.petal:nth-child(2) { --x: 18%; --t: 22s; --d: -11s; transform: scale(0.8); }
+.petal:nth-child(3) { --x: 31%; --t: 19s; --d: -6s; }
+.petal:nth-child(4) { --x: 44%; --t: 25s; --d: -17s; }
+.petal:nth-child(5) { --x: 57%; --t: 18s; --d: -9s; }
+.petal:nth-child(6) { --x: 69%; --t: 23s; --d: -3s; }
+.petal:nth-child(7) { --x: 81%; --t: 20s; --d: -14s; }
+.petal:nth-child(8) { --x: 92%; --t: 26s; --d: -7s; }
+.petal:nth-child(9) { --x: 12%; --t: 28s; --d: -20s; }
+.petal:nth-child(10) { --x: 75%; --t: 30s; --d: -24s; }
+
+/* Still petals would just sit on the top edge: no motion, no petals. */
+@media (prefers-reduced-motion: reduce) {
+  [data-skin="sakura"] .petals {
+    display: none;
+  }
 }
 
 /* -------------------------------------------------------------------- tabs */

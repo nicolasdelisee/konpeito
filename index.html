@@ -9,15 +9,47 @@
       content="Quiz de hiragana et de katakana, et fiches de kanji avec lectures, mots et phrases d’exemple."
     />
     <link rel="stylesheet" href="style.css" />
+    <!-- Before the first paint, so the page never flashes in the other skin. -->
+    <script>
+      try {
+        document.documentElement.dataset.skin = localStorage.getItem('konpeito.skin') || 'konpeito';
+      } catch (error) {
+        document.documentElement.dataset.skin = 'konpeito';
+      }
+    </script>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>"
     />
   </head>
   <body>
+    <div class="petals" aria-hidden="true">
+      <span class="petal"></span><span class="petal"></span><span class="petal"></span>
+      <span class="petal"></span><span class="petal"></span><span class="petal"></span>
+      <span class="petal"></span><span class="petal"></span><span class="petal"></span>
+      <span class="petal"></span>
+    </div>
     <div class="app" id="app">
       <header class="site-header">
-        <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Un konpeitō">
+        <button class="skin-toggle" id="skin-toggle" type="button"></button>
+        <svg class="logo logo-sakura" viewBox="0 0 100 100" role="img" aria-label="Une fleur de cerisier">
+          <defs>
+            <radialGradient id="blossom" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="var(--surface)" />
+              <stop offset="45%" stop-color="var(--candy-light)" />
+              <stop offset="100%" stop-color="var(--accent)" />
+            </radialGradient>
+          </defs>
+          <g fill="url(#blossom)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round">
+            <path id="sakura-petal" d="M50 50 C 33 40, 30 16, 43 7 L 50 14 L 57 7 C 70 16, 67 40, 50 50 Z" />
+            <use href="#sakura-petal" transform="rotate(72 50 50)" />
+            <use href="#sakura-petal" transform="rotate(144 50 50)" />
+            <use href="#sakura-petal" transform="rotate(216 50 50)" />
+            <use href="#sakura-petal" transform="rotate(288 50 50)" />
+          </g>
+          <circle cx="50" cy="50" r="6" fill="var(--candy-lemon)" />
+        </svg>
+        <svg class="logo logo-candy" viewBox="0 0 100 100" role="img" aria-label="Un konpeitō">
           <defs>
             <radialGradient id="candy" cx="38%" cy="32%" r="72%">
               <stop offset="0%" stop-color="var(--candy-light)" />
@@ -34,7 +66,7 @@
           <ellipse cx="38" cy="36" rx="8" ry="6" fill="#fff" opacity="0.5" transform="rotate(-25 38 36)" />
         </svg>
         <h1><span class="jp">こんぺいとう</span> <span class="latin">Konpeitō</span></h1>
-        <p class="tagline">Un grain de sucre à la fois.</p>
+        <p class="tagline" id="tagline">Un grain de sucre à la fois.</p>
         <nav class="tabs" aria-label="Sections">
           <a class="tab" id="tab-kana" href="#kana"><span class="tab-jp">あ</span> Kana</a>
           <a class="tab" id="tab-kanji" href="#kanji"><span class="tab-jp">漢</span> Kanji</a>
@@ -255,5 +287,6 @@
     <script src="app.js"></script>
     <script src="kanji.js"></script>
     <script src="kanji-app.js"></script>
+    <script src="theme.js"></script>
   </body>
 </html>
