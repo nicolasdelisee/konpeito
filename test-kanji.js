@@ -34,10 +34,10 @@ global.window.addEventListener = (type, fn) => {
 
 const load = (file) => fs.readFileSync(path.join(DIR, file), 'utf8');
 (0, eval)(
-  `${load('kanji.js')}\n${load('kanji-app.js')}\n` +
+  `${load('kanji.js')}\n${load('romaji.js')}\n${load('kanji-app.js')}\n` +
     ';Object.assign(globalThis.__scope||(globalThis.__scope={}),' +
     '{KANJI,KANJI_GROUPS,ALL_WORDS,parseRuby,kanjiIn,suggestNext,wordsElsewhere,kanjiStore,' +
-    'buildExam,currentExam:()=>exam})',
+    'buildExam,toKana,sameReading,currentExam:()=>exam})',
 );
 const { KANJI, KANJI_GROUPS, ALL_WORDS, parseRuby, kanjiIn, suggestNext, wordsElsewhere } =
   globalThis.__scope;
@@ -171,7 +171,11 @@ check('水 est lisible', view.innerHTML.includes('✓ tu peux le lire'));
 const levelBtn = (level) => Object.assign(new El(), { _class: 'kj-level', dataset: { level } });
 window.location.hash = '#kanji';
 view.fire('click', { target: levelBtn('5') });
-check('filtre N5 : toutes les tuiles N5', (view.innerHTML.match(/class="kj-open kj-tile/g) || []).length === KANJI.filter((c) => c.n === 5).length);
+check(
+  'filtre N5 : toutes les tuiles N5',
+  (view.innerHTML.match(/class="kj-open kj-tile/g) || []).length ===
+    KANJI.filter((c) => c.n === 5).length,
+);
 check('… le niveau est annoncé', view.innerHTML.includes('du niveau N5'));
 check('les niveaux sans fiche sont « à venir »', view.innerHTML.includes('à venir'));
 view.fire('click', { target: levelBtn('all') });
@@ -185,6 +189,29 @@ check('flèches sans effet sur la liste', window.location.hash === '#kanji/incon
 window.location.hash = '#kanji/水';
 document.fireKey('ArrowRight');
 check('flèche droite → kanji suivant', window.location.hash === '#kanji/木', window.location.hash);
+
+// -------------------------------------------------------------------- romaji
+console.log('Saisie en romaji :');
+{
+  const { toKana: kana, sameReading: same } = globalThis.__scope;
+  const cases = [
+    ['suichuu', 'すいちゅう'],
+    ['gakkou', 'がっこう'],
+    ['konnichiwa', 'こんにちわ'],
+    ["kon'ya", 'こんや'],
+    ['sinbun', 'しんぶん'],
+    ['matcha', 'まっちゃ'],
+    ['kyou', 'きょう'],
+    ['onna no hito', 'おんなのひと'],
+    ['HITO', 'ひと'],
+    ['スイ', 'すい'],
+    ['hon', 'ほん'],
+  ];
+  const wrong = cases.filter(([a, b]) => kana(a) !== b);
+  check('conversion romaji → kana', !wrong.length, wrong.map(([a]) => `${a}→${kana(a)}`).join(' '));
+  check('ぢ/じ et づ/ず équivalents', same('hanaji', 'はなぢ') && same('tsuzuku', 'つづく'));
+  check('réponse vide refusée', !same('', ''));
+}
 
 // --------------------------------------------------------------------- exams
 console.log('Examens :');
@@ -220,21 +247,30 @@ check(
 click('kj-exam-start', { n: '5' });
 let ex = currentExam();
 check('l’examen démarre', !!ex && window.location.hash === '#kanji/examen/5');
-check('2 questions par kanji', ex.questions.length === 10, `(${ex.questions.length})`);
+check('3 questions par kanji', ex.questions.length === 15, `(${ex.questions.length})`);
 check(
-  'chaque kanji est interrogé',
-  ['日', '大', '水', '一', '人'].every((k) => ex.questions.some((q) => q.card.k === k)),
+  'chaque kanji est interrogé, avec une lecture à écrire',
+  ['日', '大', '水', '一', '人'].every((k) => ex.questions.some((q) => q.typed && q.card.k === k)),
+  ex.questions.map((q) => q.kind).join(', '),
+);
+check(
+  'pas de lecture en QCM en plus de la lecture écrite',
+  !ex.questions.some((q) => q.kind === 'Lecture'),
+);
+check(
+  'les lectures demandées donnent le sens du mot',
+  ex.questions.filter((q) => q.typed).every((q) => q.hint),
 );
 check(
   'quatre propositions distinctes, une seule bonne',
-  ex.questions.every(
-    (q) => q.options.length === 4 && new Set(q.options).size === 4 && q.answer >= 0,
-  ),
+  ex.questions
+    .filter((q) => !q.typed)
+    .every((q) => q.options.length === 4 && new Set(q.options).size === 4 && q.answer >= 0),
 );
 check(
   'les mots demandés ne contiennent que des kanji de l’examen',
   ex.questions
-    .filter((q) => q.kind === 'Lecture' || q.kind === 'Sens du mot')
+    .filter((q) => q.typed || q.kind === 'Sens du mot')
     .every((q) => kanjiIn(q.prompt).every((k) => '日大水一人'.includes(k))),
 );
 
@@ -246,35 +282,47 @@ check(
   currentExam() === ex && ex.questions[0].prompt === firstPrompt,
 );
 
-// One wrong answer, then all right, alternating click and keyboard.
+// One wrong answer, then all right: clicks, keys and typed readings.
+const typeAnswer = (text) =>
+  view.fire('submit', { target: { elements: { answer: { value: text } } } });
+let digitsIgnored = true;
 ex.questions.forEach((q, i) => {
-  const pick = i === 0 ? (q.answer + 1) % 4 : q.answer;
-  if (i % 2) document.fireKey(String(pick + 1));
-  else click('kj-choice', { i: String(pick) });
+  if (q.typed) {
+    document.fireKey('1'); // digits belong to the input, not to an option
+    digitsIgnored = digitsIgnored && ex.chosen === null;
+    typeAnswer('');
+    digitsIgnored = digitsIgnored && ex.chosen === null;
+    typeAnswer(i === 0 ? 'zzz' : globalThis.__scope.toKana(q.expected).toUpperCase());
+  } else {
+    const pick = i === 0 ? (q.answer + 1) % 4 : q.answer;
+    if (i % 2) document.fireKey(String(pick + 1));
+    else click('kj-choice', { i: String(pick) });
+  }
   if (i === 0) check('mauvaise réponse corrigée', view.innerHTML.includes('feedback ko'));
   if (i % 2) document.fireKey('Enter');
   else click('kj-exam-next');
 });
+check('saisie : ni un chiffre ni une réponse vide ne comptent', digitsIgnored);
 check('examen terminé', ex.done && view.innerHTML.includes('Examen des 5 kanji'));
-check('score 9 / 10', ex.score === 9 && view.innerHTML.includes('<strong>90</strong>%'));
+check('score 14 / 15', ex.score === 14 && view.innerHTML.includes('<strong>93</strong>%'));
 check(
   'l’erreur est listée avec un lien vers sa fiche',
   view.innerHTML.includes('À revoir') && view.innerHTML.includes(`data-k="${ex.missed[0].card.k}"`),
 );
 check(
   'meilleur score enregistré',
-  JSON.parse(memory.get('konpeito.kanji.v1')).exams['5'].best === 90,
+  JSON.parse(memory.get('konpeito.kanji.v1')).exams['5'].best === 93,
 );
 
 window.location.hash = '#kanji';
-check('le score apparaît dans la liste', view.innerHTML.includes('kj-exam-badge is-passed">90 %'));
+check('le score apparaît dans la liste', view.innerHTML.includes('kj-exam-badge is-passed">93 %'));
 check('quitter efface l’examen en cours', currentExam() === null);
 
 // A big exam stays bounded and always covers the latest five.
 store.learned = KANJI.map((c) => c.k);
 const big = buildExam(70);
 const latest = store.learned.slice(65, 70);
-check('examen plafonné à 30 questions', big.questions.length === 30, `(${big.questions.length})`);
+check('examen plafonné à 40 questions', big.questions.length === 40, `(${big.questions.length})`);
 check(
   'les 5 derniers kanji y sont toujours',
   latest.every((k) => big.questions.some((q) => q.card.k === k)),

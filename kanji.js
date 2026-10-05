@@ -9,8 +9,9 @@
  *   fr       meaning(s), in French
  *   strokes  stroke count
  *   on, kun  readings. A dot marks the okurigana: 'おお.きい' → 大きい
- *   words    { w, r, fr, y } — y is the reading of *this* kanji in the word:
- *            'on', 'kun' or 'sp' (special reading, learnt as a whole word)
+ *   words    { w, r, fr, y, alt } — y is the reading of *this* kanji in the
+ *            word: 'on', 'kun' or 'sp' (special reading, learnt as a whole
+ *            word). `alt` lists other correct readings, accepted in exams.
  *   phrases  { jp, fr } — every run of kanji in `jp` carries its reading in
  *            brackets right after it: 毎日[まいにち]、パンを 食[た]べます。
  *   notes    the traps worth knowing (optional)
@@ -238,7 +239,7 @@ const KANJI = [
     words: [
       { w: '十', r: 'とお', fr: 'dix (objets)', y: 'kun' },
       { w: '十月', r: 'じゅうがつ', fr: 'octobre', y: 'on' },
-      { w: '十分', r: 'じゅっぷん', fr: 'dix minutes', y: 'on' },
+      { w: '十分', r: 'じゅっぷん', alt: ['じっぷん'], fr: 'dix minutes', y: 'on' },
       { w: '十日', r: 'とおか', fr: 'le 10 du mois, dix jours', y: 'kun' },
     ],
     phrases: [
@@ -509,7 +510,7 @@ const KANJI = [
     words: [
       { w: '一年', r: 'いちねん', fr: 'un an', y: 'on' },
       { w: '来年', r: 'らいねん', fr: 'l’an prochain', y: 'on' },
-      { w: '毎年', r: 'まいとし', fr: 'chaque année', y: 'kun' },
+      { w: '毎年', r: 'まいとし', alt: ['まいねん'], fr: 'chaque année', y: 'kun' },
       { w: '今年', r: 'ことし', fr: 'cette année', y: 'sp' },
     ],
     phrases: [
@@ -600,7 +601,7 @@ const KANJI = [
     words: [
       { w: '分かる', r: 'わかる', fr: 'comprendre', y: 'kun' },
       { w: '五分', r: 'ごふん', fr: 'cinq minutes', y: 'on' },
-      { w: '十分', r: 'じゅっぷん', fr: 'dix minutes', y: 'on' },
+      { w: '十分', r: 'じゅっぷん', alt: ['じっぷん'], fr: 'dix minutes', y: 'on' },
       { w: '半分', r: 'はんぶん', fr: 'la moitié', y: 'on' },
       { w: '自分', r: 'じぶん', fr: 'soi-même', y: 'on' },
     ],
@@ -643,7 +644,7 @@ const KANJI = [
       { w: '毎朝', r: 'まいあさ', fr: 'chaque matin', y: 'on' },
       { w: '毎週', r: 'まいしゅう', fr: 'chaque semaine', y: 'on' },
       { w: '毎月', r: 'まいつき', fr: 'chaque mois', y: 'on' },
-      { w: '毎年', r: 'まいとし', fr: 'chaque année', y: 'on' },
+      { w: '毎年', r: 'まいとし', alt: ['まいねん'], fr: 'chaque année', y: 'on' },
     ],
     phrases: [
       { jp: '毎朝[まいあさ] コーヒーを 飲[の]みます。', fr: 'Je bois un café chaque matin.' },

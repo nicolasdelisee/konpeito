@@ -47,8 +47,8 @@ permanence ce qu'on attend de toi.
 
 ## Kanji
 
-Un second onglet, `#kanji`, propose une fiche par kanji — 72 kanji du quotidien
-pour commencer, rangés par thème (nombres, jours, temps, gens…). Chaque fiche
+L'onglet principal propose une fiche par kanji — les 99 du JLPT N5 pour
+commencer, rangés par thème (nombres, jours, temps, gens…). Chaque fiche
 donne le sens, le nombre de traits, les lectures ON et KUN, quelques mots
 courants et deux phrases simples, plus les pièges à connaître (あの日 se lit
 あのひ, 大人 se lit おとな…).
@@ -64,11 +64,22 @@ Tu marques les kanji que tu as appris, et tout le reste s'en déduit :
   mots avec ce que tu sais déjà.
 
 **Examens** : à 5, 10, 15… kanji appris, un examen reprend *tous* les kanji
-appris jusque-là, dans l'ordre où tu les as appris — deux questions par kanji
-(30 au plus, les cinq derniers toujours inclus), parmi : sens du kanji, lecture
-d'un mot, sens d'un mot, sens d'une phrase. Les mots demandés n'utilisent que des
-kanji de l'examen ; dans les phrases, les autres gardent leurs furigana. Réussi à
-80 %, et le meilleur score reste affiché.
+appris jusque-là, dans l'ordre où tu les as appris. Trois questions par kanji
+(40 au plus, les cinq derniers toujours inclus) :
+
+- une **lecture à écrire**, en romaji ou en kana — `suichuu` devient すいちゅう
+  pendant la frappe, les orthographes Hepburn et Kunrei passent toutes les deux,
+  et le sens du mot est donné pour lever l'ambiguïté (金 : きん ou かね ?) ;
+- deux questions en QCM parmi : sens du kanji, kanji à retrouver d'après son
+  sens, sens d'un mot, sens d'une phrase.
+
+Les mots demandés n'utilisent que des kanji de l'examen ; dans les phrases, les
+autres gardent leurs furigana. Réussi à 80 %, et le meilleur score reste affiché.
+
+**Niveaux JLPT** : chaque fiche porte son niveau (`n` dans `kanji.js`), et la
+liste se filtre par niveau, les thèmes restant à l'intérieur. Le N5 est complet
+(99 kanji) ; les niveaux suivants s'ajoutent fiche par fiche. Le JLPT ne publie
+plus de liste officielle depuis 2010 : on suit les listes officieuses usuelles.
 
 Les données sont dans `kanji.js`, écrites à la main ; `test-kanji.js` vérifie
 que chaque kanji d'une phrase porte bien sa lecture.
@@ -159,6 +170,7 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 | `recognizer.js`      | Reconnaissance d'écriture : amincissement, nuages, comparaison |
 | `app.js`             | Tirage pondéré, modes de quiz, score, persistance             |
 | `kanji.js`           | Les fiches de kanji : lectures, mots, phrases, pièges          |
+| `romaji.js`          | Conversion romaji → hiragana des réponses tapées               |
 | `kanji-app.js`       | L’onglet kanji : liste, fiche, furigana, liens entre fiches    |
 | `test-kanji.js`      | Vérifie les données kanji et l’affichage des fiches            |
 | `test.js`            | Tests des quiz au clavier (faux DOM)                          |
