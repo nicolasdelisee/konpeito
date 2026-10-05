@@ -1,11 +1,12 @@
 # こんぺいとう · Konpeitō
 
-Petit quiz pour apprendre les hiragana et les katakana, et fiches pour réviser
-les kanji. Aucun build, aucune
-dépendance : des fichiers statiques et c'est tout.
+Fiches et examens pour apprendre les kanji, et un quiz pour les hiragana et les
+katakana. Aucun build, aucune dépendance : des fichiers statiques et c'est tout.
+
+En ligne : https://nicolasdelisee.github.io/konpeito/
 
 Le 金平糖 est un petit bonbon de sucre à facettes, qu'on grignote grain par
-grain — c'est à peu près comme ça qu'on apprend les kana.
+grain — c'est à peu près comme ça qu'on apprend les kana, puis les kanji.
 
 ## Lancer
 
@@ -20,7 +21,54 @@ depuis le téléphone sur le même Wi-Fi) :
 python3 -m http.server 8000   # puis http://localhost:8000
 ```
 
-## Ce qu'il y a dedans
+## Kanji
+
+L'onglet principal propose une fiche par kanji — les 100 du JLPT N5 pour
+commencer, rangés par thème (nombres, jours, temps, gens…). Chaque fiche
+donne le sens, le nombre de traits, les lectures ON et KUN, quelques mots
+courants et deux phrases simples, plus les pièges à connaître (あの日 se lit
+あのひ, 大人 se lit おとな…).
+
+Tu marques les kanji que tu as appris, et tout le reste s'en déduit :
+
+- **Furigana automatiques** : la lecture ne s'affiche que sur les kanji que tu
+  n'as pas encore appris. Un mot dont tu connais tous les kanji reste nu — touche-le
+  pour vérifier. Les modes « toujours » et « jamais » existent aussi.
+- **Liens entre fiches** : chaque mot montre ses autres kanji, cliquables, et
+  chaque fiche liste les mots d'autres fiches où le kanji revient.
+- **Prochain kanji conseillé** : celui qui te rend lisibles le plus de nouveaux
+  mots avec ce que tu sais déjà.
+
+**Examens** : à 5, 10, 15… kanji appris, un examen reprend les kanji appris
+jusque-là, dans l'ordre où tu les as appris. Jusqu'à trois questions par kanji,
+distribuées tour par tour — une pour chaque kanji, puis une deuxième… — et
+coupées à 40 : jusqu'à 40 kanji, chacun est donc interrogé au moins une fois,
+les cinq derniers appris en premier. Un score reste attaché aux kanji sur
+lesquels il a été obtenu : si la liste change, l'examen redevient « à passer ».
+
+- une **lecture à écrire**, en romaji ou en kana — `suichuu` devient すいちゅう
+  pendant la frappe. Hepburn et Kunrei passent tous les deux, comme `nn` ou `n'`
+  pour ん, les macrons (`kyō`) et les secondes lectures correctes (毎年 :
+  まいとし ou まいねん). Le sens du mot est donné pour lever l'ambiguïté (金 :
+  きん ou かね ?) ;
+- deux questions en QCM parmi : sens du kanji, kanji à retrouver d'après son
+  sens, sens d'un mot, sens d'une phrase.
+
+Les mots demandés n'utilisent que des kanji de l'examen ; dans les phrases, les
+autres gardent leurs furigana. Réussi à 80 %, et le meilleur score reste affiché.
+
+**Niveaux JLPT** : chaque fiche porte son niveau (`n` dans `kanji.js`), et la
+liste se filtre par niveau, les thèmes restant à l'intérieur. Le N5 est complet
+(100 kanji) ; les niveaux suivants s'ajoutent fiche par fiche. Le JLPT ne publie
+plus de liste officielle depuis 2010 : on suit les listes officieuses usuelles.
+
+Les données sont dans `kanji.js`, écrites à la main ; `test-kanji.js` vérifie
+que chaque kanji d'une phrase porte bien sa lecture.
+
+## Kana
+
+Le second onglet (`#kana`).
+
 
 - **208 cartes** : les 46 kana de base, les 25 dakuten/handakuten et les 33 yōon,
   en hiragana comme en katakana.
@@ -39,50 +87,11 @@ python3 -m http.server 8000   # puis http://localhost:8000
 - **Clavier** : touches `1` à `4` pour répondre, `Entrée` / `Espace` pour
   enchaîner, `Retour arrière` pour annuler un trait en mode écriture.
 
-L'écran d'accueil s'ouvre sur une phrase qui résume la prochaine session — « 20
+L'onglet s'ouvre sur une phrase qui résume la prochaine session — « 20
 questions · hiragana, les 46 de base · tu choisis la bonne lecture » — et le
 bouton pour la lancer. Les réglages viennent après, numérotés, chacun avec un
 exemple concret de ce qu'il change. Pendant le quiz, une ligne rappelle en
 permanence ce qu'on attend de toi.
-
-## Kanji
-
-L'onglet principal propose une fiche par kanji — les 99 du JLPT N5 pour
-commencer, rangés par thème (nombres, jours, temps, gens…). Chaque fiche
-donne le sens, le nombre de traits, les lectures ON et KUN, quelques mots
-courants et deux phrases simples, plus les pièges à connaître (あの日 se lit
-あのひ, 大人 se lit おとな…).
-
-Tu marques les kanji que tu as appris, et tout le reste s'en déduit :
-
-- **Furigana automatiques** : la lecture ne s'affiche que sur les kanji que tu
-  n'as pas encore appris. Un mot dont tu connais tous les kanji reste nu — touche-le
-  pour vérifier. Les modes « toujours » et « jamais » existent aussi.
-- **Liens entre fiches** : chaque mot montre ses autres kanji, cliquables, et
-  chaque fiche liste les mots d'autres fiches où le kanji revient.
-- **Prochain kanji conseillé** : celui qui te rend lisibles le plus de nouveaux
-  mots avec ce que tu sais déjà.
-
-**Examens** : à 5, 10, 15… kanji appris, un examen reprend *tous* les kanji
-appris jusque-là, dans l'ordre où tu les as appris. Trois questions par kanji
-(40 au plus, les cinq derniers toujours inclus) :
-
-- une **lecture à écrire**, en romaji ou en kana — `suichuu` devient すいちゅう
-  pendant la frappe, les orthographes Hepburn et Kunrei passent toutes les deux,
-  et le sens du mot est donné pour lever l'ambiguïté (金 : きん ou かね ?) ;
-- deux questions en QCM parmi : sens du kanji, kanji à retrouver d'après son
-  sens, sens d'un mot, sens d'une phrase.
-
-Les mots demandés n'utilisent que des kanji de l'examen ; dans les phrases, les
-autres gardent leurs furigana. Réussi à 80 %, et le meilleur score reste affiché.
-
-**Niveaux JLPT** : chaque fiche porte son niveau (`n` dans `kanji.js`), et la
-liste se filtre par niveau, les thèmes restant à l'intérieur. Le N5 est complet
-(99 kanji) ; les niveaux suivants s'ajoutent fiche par fiche. Le JLPT ne publie
-plus de liste officielle depuis 2010 : on suit les listes officieuses usuelles.
-
-Les données sont dans `kanji.js`, écrites à la main ; `test-kanji.js` vérifie
-que chaque kanji d'une phrase porte bien sa lecture.
 
 ## Grille à compléter
 
@@ -163,7 +172,7 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 
 | Fichier              | Rôle                                                          |
 | -------------------- | ------------------------------------------------------------- |
-| `index.html`         | Structure des trois écrans (réglages, quiz, résultats)         |
+| `index.html`         | Les deux onglets : kanji (rendu par `kanji-app.js`) et kana    |
 | `style.css`          | Deux thèmes (Konpeitō, Sakura), clair/sombre automatique       |
 | `theme.js`           | Bouton de bascule entre les thèmes, mémorisé                   |
 | `kana.js`            | Le jeu de données — une ligne par rangée, hiragana + katakana   |
@@ -175,7 +184,7 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 | `test-kanji.js`      | Vérifie les données kanji et l’affichage des fiches            |
 | `test.js`            | Tests des quiz au clavier (faux DOM)                          |
 | `test-recognizer.js` | Mesure de la reconnaissance + mode écriture bout en bout       |
-| `test-dom.js`        | Faux DOM partagé par les deux suites                          |
+| `test-dom.js`        | Faux DOM partagé par les trois suites                         |
 | `tools/render-kana.py` | Rend les kana en bitmaps pour les tests (dev uniquement)     |
 | `fixtures/`          | Tracés réels conservés comme tests de non-régression           |
 

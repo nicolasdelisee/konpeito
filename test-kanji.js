@@ -16,7 +16,8 @@ const { createDom } = require('./test-dom.js');
 
 const { El, id, document, memory } = createDom();
 
-// A location whose hash changes fire `hashchange`, like a browser's.
+// A location that behaves like a browser's: the hash reads back percent-encoded
+// (#kanji/水 → #kanji/%E6%B0%B4), and only a real change fires `hashchange`.
 const hashListeners = [];
 let currentHash = '';
 global.window.location = {
@@ -24,7 +25,9 @@ global.window.location = {
     return currentHash;
   },
   set hash(value) {
-    currentHash = value.startsWith('#') ? value : `#${value}`;
+    const next = encodeURI(value.startsWith('#') ? value : `#${value}`).replace(/%25/g, '%');
+    if (next === currentHash) return;
+    currentHash = next;
     hashListeners.forEach((fn) => fn());
   },
 };
@@ -34,7 +37,9 @@ global.window.addEventListener = (type, fn) => {
 
 const load = (file) => fs.readFileSync(path.join(DIR, file), 'utf8');
 (0, eval)(
-  `${load('kanji.js')}\n${load('romaji.js')}\n${load('kanji-app.js')}\n` +
+  // The kana quiz shares the page and the keyboard: load it too.
+  `${load('kana.js')}\n${load('recognizer.js')}\n${load('app.js')}\n` +
+    `${load('kanji.js')}\n${load('romaji.js')}\n${load('kanji-app.js')}\n` +
     ';Object.assign(globalThis.__scope||(globalThis.__scope={}),' +
     '{KANJI,KANJI_GROUPS,ALL_WORDS,parseRuby,kanjiIn,suggestNext,wordsElsewhere,kanjiStore,' +
     'buildExam,toKana,sameReading,currentExam:()=>exam})',
@@ -95,6 +100,24 @@ check(
   new Set(KANJI.map((c) => c.k)).size === KANJI.length,
   `(${KANJI.length} kanji)`,
 );
+{
+  const seen = new Map();
+  const clashes = [];
+  KANJI.forEach((card) =>
+    card.words.forEach((word) => {
+      const other = seen.get(word.w);
+      if (other && (other.r !== word.r || other.fr !== word.fr)) clashes.push(word.w);
+      seen.set(word.w, word);
+    }),
+  );
+  check(
+    'un même mot a la même lecture et le même sens partout',
+    !clashes.length,
+    clashes.join(' '),
+  );
+  const phrases = KANJI.flatMap((card) => card.phrases.map((p) => p.jp));
+  check('pas de phrase en double', new Set(phrases).size === phrases.length);
+}
 check(
   'chaque groupe a des kanji',
   KANJI_GROUPS.every((g) => KANJI.some((c) => c.g === g.id)),
@@ -122,9 +145,10 @@ check('sans rien savoir, on propose un kanji', !!fromNothing, fromNothing && fro
 const afterWater = suggestNext(new Set(['水', '日', '大']));
 check(
   'la suggestion débloque des mots lisibles',
-  afterWater.words.every((w) =>
-    kanjiIn(w.w).every((k) => ['水', '日', '大', afterWater.card.k].includes(k)),
-  ),
+  afterWater.words.length > 0 &&
+    afterWater.words.every((w) =>
+      kanjiIn(w.w).every((k) => ['水', '日', '大', afterWater.card.k].includes(k)),
+    ),
   `(${afterWater.card.k} → ${afterWater.words.map((w) => w.w).join(' ')})`,
 );
 check('ALL_WORDS sans doublon', new Set(ALL_WORDS.map((w) => w.w)).size === ALL_WORDS.length);
@@ -169,6 +193,8 @@ check('le bouton dit « Appris »', view.innerHTML.includes('✓ Appris'));
 check('水 est lisible', view.innerHTML.includes('✓ tu peux le lire'));
 
 const levelBtn = (level) => Object.assign(new El(), { _class: 'kj-level', dataset: { level } });
+// A stand-in N4 card, so that filtering on N5 has something to leave out.
+KANJI.push({ ...KANJI[0], k: '試', n: 4, fr: 'essai' });
 window.location.hash = '#kanji';
 view.fire('click', { target: levelBtn('5') });
 check(
@@ -180,15 +206,27 @@ check('… le niveau est annoncé', view.innerHTML.includes('du niveau N5'));
 check('les niveaux sans fiche sont « à venir »', view.innerHTML.includes('à venir'));
 view.fire('click', { target: levelBtn('all') });
 check('filtre « Tous »', globalThis.__scope.kanjiStore.level === 'all');
+check('… qui montre aussi le N4', view.innerHTML.includes('data-k="試"'));
+KANJI.pop();
+
+window.location.hash = '#kanji/%E0';
+check('une adresse mal encodée ne casse rien', view.innerHTML.includes('kj-tiles'));
 
 window.location.hash = '#kanji/inconnu';
 check('kanji inconnu → retour à la liste', view.innerHTML.includes('kj-tiles'));
 
 document.fireKey('ArrowRight'); // no card open: nothing happens
-check('flèches sans effet sur la liste', window.location.hash === '#kanji/inconnu');
+check(
+  'flèches sans effet sur la liste',
+  decodeURIComponent(window.location.hash) === '#kanji/inconnu',
+);
 window.location.hash = '#kanji/水';
 document.fireKey('ArrowRight');
-check('flèche droite → kanji suivant', window.location.hash === '#kanji/木', window.location.hash);
+check(
+  'flèche droite → kanji suivant',
+  decodeURIComponent(window.location.hash) === '#kanji/木',
+  window.location.hash,
+);
 
 // -------------------------------------------------------------------- romaji
 console.log('Saisie en romaji :');
@@ -211,6 +249,23 @@ console.log('Saisie en romaji :');
   check('conversion romaji → kana', !wrong.length, wrong.map(([a]) => `${a}→${kana(a)}`).join(' '));
   check('ぢ/じ et づ/ず équivalents', same('hanaji', 'はなぢ') && same('tsuzuku', 'つづく'));
   check('réponse vide refusée', !same('', ''));
+  const accepted = [
+    ['sennen', 'せんえん'], // nn as ん, as the hint used to say
+    ['kinnyoubi', 'きんようび'],
+    ["kin'youbi", 'きんようび'],
+    ['kon’ya', 'こんや'], // curly apostrophe, as phones type it
+    ['kyō', 'きょう'],
+    ['ōkii', 'おおきい'],
+    ['ｓｕｉ', 'すい'],
+    ['jya', 'じゃ'],
+    ['konnichiwa', 'こんにちわ'],
+  ];
+  const refused = accepted.filter(([a, b]) => !same(a, b));
+  check('orthographes courantes acceptées', !refused.length, refused.map(([a]) => a).join(' '));
+  check(
+    'une mauvaise lecture reste fausse',
+    !same('sennen', 'せんねんまえ') && !same('mizu', 'すい'),
+  );
 }
 
 // --------------------------------------------------------------------- exams
@@ -246,7 +301,7 @@ check(
 
 click('kj-exam-start', { n: '5' });
 let ex = currentExam();
-check('l’examen démarre', !!ex && window.location.hash === '#kanji/examen/5');
+check('l’examen démarre', !!ex && decodeURIComponent(window.location.hash) === '#kanji/examen/5');
 check('3 questions par kanji', ex.questions.length === 15, `(${ex.questions.length})`);
 check(
   'chaque kanji est interrogé, avec une lecture à écrire',
@@ -328,6 +383,23 @@ check(
   latest.every((k) => big.questions.some((q) => q.card.k === k)),
 );
 store.learned = [];
+
+// --------------------------------------------------- kana and kanji, one page
+console.log('Cohabitation avec le quiz kana :');
+window.location.hash = '#kana';
+id('start-btn').fire('click');
+const kanaScore = () => `${id('score-ok').textContent}/${id('score-ko').textContent}`;
+const before = kanaScore();
+window.location.hash = '#kanji';
+['1', '2', 'Enter', ' ', 'Backspace'].forEach((key) => document.fireKey(key));
+check(
+  'sur l’onglet kanji, le clavier ne répond pas au quiz kana caché',
+  kanaScore() === before,
+  kanaScore(),
+);
+window.location.hash = '#kana';
+document.fireKey('1');
+check('… mais le quiz kana répond toujours sur son onglet', kanaScore() !== before, kanaScore());
 
 window.location.hash = '#kana';
 check('retour à l’onglet kana', view.hidden === true && id('kana-view').hidden === false);
