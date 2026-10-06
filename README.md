@@ -173,8 +173,8 @@ l'œil confond aussi : シ/ツ, ン/ソ, ク/タ, は/ほ, さ/き.
 | Fichier              | Rôle                                                          |
 | -------------------- | ------------------------------------------------------------- |
 | `index.html`         | Les deux onglets : kanji (rendu par `kanji-app.js`) et kana    |
-| `style.css`          | Deux thèmes (Konpeitō, Sakura), clair/sombre automatique       |
-| `theme.js`           | Bouton de bascule entre les thèmes, mémorisé                   |
+| `style.css`          | Thème Sakura, en clair et en sombre                           |
+| `theme.js`           | Bascule clair/sombre, mémorisée (sinon : réglage du système)   |
 | `kana.js`            | Le jeu de données — une ligne par rangée, hiragana + katakana   |
 | `recognizer.js`      | Reconnaissance d'écriture : amincissement, nuages, comparaison |
 | `app.js`             | Tirage pondéré, modes de quiz, score, persistance             |

@@ -10,17 +10,26 @@
       content="Fiches et examens de kanji — lectures, mots, phrases d’exemple — et quiz de hiragana et de katakana."
     />
     <link rel="stylesheet" href="style.css" />
-    <!-- Before the first paint, so the page never flashes in the other skin. -->
+    <!-- Before the first paint, so the page never flashes in the other theme:
+         the saved choice, or the system preference on a first visit. -->
     <script>
-      try {
-        document.documentElement.dataset.skin = localStorage.getItem('konpeito.skin') || 'konpeito';
-      } catch (error) {
-        document.documentElement.dataset.skin = 'konpeito';
-      }
+      (function () {
+        let theme = null;
+        try {
+          theme = localStorage.getItem('konpeito.theme');
+        } catch (error) {
+          // Private browsing: fall back to the system preference.
+        }
+        if (theme !== 'light' && theme !== 'dark') {
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          theme = dark ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
     </script>
     <link
       rel="icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍬</text></svg>"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>"
     />
   </head>
   <body>
@@ -32,8 +41,8 @@
     </div>
     <div class="app" id="app">
       <header class="site-header">
-        <button class="skin-toggle" id="skin-toggle" type="button">🌸 Sakura</button>
-        <svg class="logo logo-sakura" viewBox="0 0 100 100" role="img" aria-label="Une fleur de cerisier">
+        <button class="theme-toggle" id="theme-toggle" type="button">🌙 Sombre</button>
+        <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Une fleur de cerisier">
           <defs>
             <radialGradient id="blossom" cx="50%" cy="50%" r="55%">
               <stop offset="0%" stop-color="var(--surface)" />
@@ -50,24 +59,8 @@
           </g>
           <circle cx="50" cy="50" r="6" fill="var(--candy-lemon)" />
         </svg>
-        <svg class="logo logo-candy" viewBox="0 0 100 100" role="img" aria-label="Un konpeitō">
-          <defs>
-            <radialGradient id="candy" cx="38%" cy="32%" r="72%">
-              <stop offset="0%" stop-color="var(--candy-light)" />
-              <stop offset="100%" stop-color="var(--accent)" />
-            </radialGradient>
-          </defs>
-          <polygon
-            points="50.0,6.0 56.5,21.7 69.1,10.4 68.1,27.3 84.4,22.6 76.1,37.4 92.9,40.2 79.0,50.0 92.9,59.8 76.1,62.6 84.4,77.4 68.1,72.7 69.1,89.6 56.5,78.3 50.0,94.0 43.5,78.3 30.9,89.6 31.9,72.7 15.6,77.4 23.9,62.6 7.1,59.8 21.0,50.0 7.1,40.2 23.9,37.4 15.6,22.6 31.9,27.3 30.9,10.4 43.5,21.7"
-            fill="url(#candy)"
-            stroke="var(--accent)"
-            stroke-width="3"
-            stroke-linejoin="round"
-          />
-          <ellipse cx="38" cy="36" rx="8" ry="6" fill="#fff" opacity="0.5" transform="rotate(-25 38 36)" />
-        </svg>
         <h1><span class="jp">こんぺいとう</span> <span class="latin">Konpeitō</span></h1>
-        <p class="tagline" id="tagline">Un grain de sucre à la fois.</p>
+        <p class="tagline">Un pétale à la fois.</p>
         <nav class="tabs" aria-label="Sections">
           <a class="tab" id="tab-kanji" href="#kanji"><span class="tab-jp">漢</span> Kanji</a>
           <a class="tab" id="tab-kana" href="#kana"><span class="tab-jp">あ</span> Kana</a>
