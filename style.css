@@ -68,16 +68,19 @@
 }
 
 /* ------------------------------------------------------------ sakura skin
-   Same tokens, softer palette: cream paper, white cards, pastel blossom pink.
-   Fills are pale, so the text on them turns dark rose instead of white. */
+   Same tokens, softer palette: a very light pink page, white cards, pastel
+   blossom pink. Fills are pale, so the text on them turns dark rose instead of
+   white. No night version: the skin stays light even in dark mode. */
 :root[data-skin="sakura"] {
-  --bg: #fffaf5;
-  --bg-glow: #ffe8ee;
-  --bg-glow-2: #fff0dc;
+  /* Always light, whatever the system says: Sakura is a daytime skin. */
+  color-scheme: light;
+  --bg: #fff1f5;
+  --bg-glow: #ffdbe6;
+  --bg-glow-2: #ffeef3;
   --surface: #ffffff;
-  --surface-alt: #fff7f3;
-  --border: #f6e4e4;
-  --border-strong: #f0cdd6;
+  --surface-alt: #fff6f8;
+  --border: #f8dfe6;
+  --border-strong: #f2c7d4;
   --text: #5b4249;
   --muted: #8d727b;
   --accent: #fbcbd8;
@@ -96,36 +99,6 @@
   --shadow-sm: 0 1px 2px rgba(200, 140, 155, 0.08);
   --shadow: 0 2px 4px rgba(200, 140, 155, 0.06), 0 12px 28px -14px rgba(225, 150, 170, 0.35);
   --shadow-lg: 0 4px 8px rgba(200, 140, 155, 0.08), 0 22px 44px -18px rgba(225, 150, 170, 0.42);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-skin="sakura"] {
-    --bg: #221d26;
-    --bg-glow: #3d2a36;
-    --bg-glow-2: #2e2622;
-    --surface: #2a2430;
-    --surface-alt: #322a37;
-    --border: #41374a;
-    --border-strong: #5a4b60;
-    --text: #f8edf0;
-    --muted: #b5a5b0;
-    --accent: #f7bfcd;
-    --accent-deep: #eea5b9;
-    --accent-soft: #46303d;
-    --accent-ink: #f7bfcd;
-    --on-accent: #4a2234;
-    --candy-light: #fbd9e2;
-    --ok: #8fd8aa;
-    --ok-soft: #22392c;
-    --ko: #ffa69b;
-    --ko-soft: #44292c;
-    --candy-mint: #9fd8b6;
-    --candy-lemon: #f3d08b;
-    --candy-lilac: #c9b8f5;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.75);
-    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 22px 44px -18px rgba(0, 0, 0, 0.85);
-  }
 }
 
 * {
